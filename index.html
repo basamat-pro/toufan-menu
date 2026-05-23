@@ -155,7 +155,7 @@
 
 <script>
     // =============================================
-    // 📍📍📍 ضع مصفوفة الأصناف (menuItems) هنا 📍📍📍
+    // ضع مصفوفة الأصناف (menuItems) هنا
     // =============================================
     const menuItems = [
         { id: 616, name: "ربع بروست", price: 1200, category: "قسم البروست البلدي", meal: "الكل" },
@@ -1027,6 +1027,14 @@
         window.open(`https://wa.me/967778213277?text=${encodeURIComponent(msg)}`);
     }
 </script>
+
+<!-- كود تسجيل Service Worker (لتفعيل التثبيت) -->
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+    }
+</script>
+
 <!-- شريط التوقيع السفلي -->
 <div style="text-align:center; padding:20px; margin-top:20px; border-top:1px solid #333; background:#0a0a0a;">
     <hr style="border:0; border-top:2px solid #c5a059; margin-bottom:10px; width:40%; margin-left:auto; margin-right:auto; opacity:0.5;">
@@ -1040,5 +1048,6 @@
         </a>
     </p>
 </div>
+
 </body>
 </html>
