@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>بصمات برو - طوفان الأقصى</title>
+    
+    <!-- ملفات PWA للتثبيت على الشاشة -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="بصمات برو">
+    
     <style>
         :root { --bg: #0a0a0a; --gold: #c5a059; --red: #ff3333; --dark-red: #8b0000; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -147,7 +155,7 @@
 
 <script>
     // =============================================
-    // ضع مصفوفة الأصناف (menuItems) هنا
+    // 📍📍📍 ضع مصفوفة الأصناف (menuItems) هنا 📍📍📍
     // =============================================
     const menuItems = [
         { id: 616, name: "ربع بروست", price: 1200, category: "قسم البروست البلدي", meal: "الكل" },
@@ -801,7 +809,6 @@
         setTimeout(() => toast.classList.remove('show'), 1500);
     }
 
-    // دالة البحث الصوتي المطورة
     function startVoiceSearch() {
         if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
             showToast('❌ المتصفح الحالي لا يدعم البحث الصوتي');
@@ -849,55 +856,54 @@
         }
     }
 
-function saveFavoriteMeal() {
-    if (Object.keys(cart).length === 0) { 
-        showToast('⚠️ السلة فارغة'); 
-        return; 
+    function saveFavoriteMeal() {
+        if (Object.keys(cart).length === 0) { 
+            showToast('⚠️ السلة فارغة'); 
+            return; 
+        }
+        
+        let text = '🍽️ الوجبة المفضلة:\n─────────────────\n';
+        for(let id in cart) {
+            const i = menuItems.find(x => x.id == id);
+            if(i) text += `${i.name} x${cart[id]}\n`;
+        }
+        
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        
+        localStorage.setItem('favoriteMeal', JSON.stringify(cart));
+        showToast('❤️ تم حفظ الوجبة كوجبة مفضلة ونسخها');
     }
-    
-    let text = '🍽️ الوجبة المفضلة:\n─────────────────\n';
-    for(let id in cart) {
-        const i = menuItems.find(x => x.id == id);
-        if(i) text += `${i.name} x${cart[id]}\n`;
-    }
-    
-    // نسخ الوجبة إلى الحافظة
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-    
-    // تخزينها في localStorage للمحاولة
-    localStorage.setItem('favoriteMeal', JSON.stringify(cart));
-    showToast('❤️ تم حفظ الوجبة كوجبة مفضلة ونسخها');
-}
 
-function loadFavoriteMeal() {
-    let saved = localStorage.getItem('favoriteMeal');
-    
-    if (!saved) {
-        showToast('⭐ لا توجد وجبة مفضلة محفوظة');
-        return;
-    }
-    
-    try {
-        let savedCart = JSON.parse(saved);
-        if (Object.keys(savedCart).length === 0) {
-            showToast('⭐ الوجبة المحفوظة فارغة');
+    function loadFavoriteMeal() {
+        let saved = localStorage.getItem('favoriteMeal');
+        
+        if (!saved) {
+            showToast('⭐ لا توجد وجبة مفضلة محفوظة');
             return;
         }
         
-        cart = savedCart;
-        updateUI();
-        showToast('⭐ تم استدعاء الوجبة المفضلة');
-        
-    } catch(e) {
-        console.error('خطأ في استدعاء الوجبة:', e);
-        showToast('❌ حدث خطأ في استدعاء الوجبة المفضلة');
+        try {
+            let savedCart = JSON.parse(saved);
+            if (Object.keys(savedCart).length === 0) {
+                showToast('⭐ الوجبة المحفوظة فارغة');
+                return;
+            }
+            
+            cart = savedCart;
+            updateUI();
+            showToast('⭐ تم استدعاء الوجبة المفضلة');
+            
+        } catch(e) {
+            console.error('خطأ في استدعاء الوجبة:', e);
+            showToast('❌ حدث خطأ في استدعاء الوجبة المفضلة');
+        }
     }
-}
+
     function copyCartToClipboard() {
         if (Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
         let text = '🍽️ سلة الطلبات 🍽️\n─────────────────\n';
@@ -1021,5 +1027,18 @@ function loadFavoriteMeal() {
         window.open(`https://wa.me/967778213277?text=${encodeURIComponent(msg)}`);
     }
 </script>
+<!-- شريط التوقيع السفلي -->
+<div style="text-align:center; padding:20px; margin-top:20px; border-top:1px solid #333; background:#0a0a0a;">
+    <hr style="border:0; border-top:2px solid #c5a059; margin-bottom:10px; width:40%; margin-left:auto; margin-right:auto; opacity:0.5;">
+    <p style="color:#ffffff; font-size:14px; margin:0; font-weight:bold;">
+        تصميم وتنفيذ المهندس: 
+        <span style="color:#ffffff;">محمد الصالحي</span>
+    </p>
+    <p style="margin-top:8px;">
+        <a href="https://wa.me/967778213277" style="color:#c5a059; text-decoration:none; font-size:14px; font-weight:bold;">
+            بصمات برو - 778213277
+        </a>
+    </p>
+</div>
 </body>
 </html>
