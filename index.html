@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="بصمات برو">
     
-    <!-- ⭐⭐⭐ ملف الأصناف المنفصل ⭐⭐⭐ -->
+    <!-- ملف الأصناف المنفصل -->
     <script src="menu-data.js"></script>
     
     <style>
@@ -333,6 +333,10 @@
         showToast('✅ تم إرسال الطلب الداخلي');
     }
     
+    // =============================================
+    // الطلب الخارجي مع إرسال الموقع الجغرافي
+    // =============================================
+    
     function sendExternalOrder() {
         if (Object.keys(cart).length === 0) {
             showToast('⚠️ السلة فارغة، أضف أصنافاً أولاً');
@@ -345,6 +349,7 @@
             <div class="dialog-box">
                 <h3>📍 طلب خارجي</h3>
                 <p>هل توافق على إرسال موقعك الجغرافي؟</p>
+                <p style="font-size:12px; color:#c5a059;">📍 سيساعد الموقع مندوب التوصيل للوصول إليك بدقة</p>
                 <div class="dialog-buttons">
                     <button class="dialog-btn cancel" id="noLocation">لا، شكراً</button>
                     <button class="dialog-btn confirm" id="sendLocation">نعم، أرسل الموقع</button>
@@ -373,7 +378,7 @@
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += `📅 التاريخ: ${formattedDate}\n`;
         msg += `🕐 الوقت: ${formattedTime}\n`;
-        msg += "🗺️ *سيتم إرسال الموقع الجغرافي بشكل منفصل*\n";
+        msg += "🗺️ *سيتم إرسال الموقع الجغرافي بعد قليل*\n";
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += "*📋 تفاصيل الطلب:*\n\n";
         
@@ -395,25 +400,52 @@
         const deliveryUrl = `https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`;
         window.open(deliveryUrl);
         
-        if (navigator.geolocation) {
-            showToast('📍 جاري تحديد موقعك...');
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    const locationMsg = `📍 *موقع الزبون*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🗺️ الرابط:\nhttps://maps.google.com/?q=${lat},${lng}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
-                    window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(locationMsg)}`);
-                    showToast('✅ تم إرسال الطلب والموقع');
-                },
-                (error) => {
-                    let errorMsg = "⚠️ لم نتمكن من تحديد موقعك";
-                    if (error.code === 1) errorMsg = "⚠️ يرجى تمكين خدمة الموقع من الإعدادات";
-                    showToast(errorMsg);
-                }
-            );
-        } else {
+        showToast('📍 جاري الحصول على موقعك...');
+        
+        if (!navigator.geolocation) {
             showToast('⚠️ متصفحك لا يدعم مشاركة الموقع');
+            return;
         }
+        
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        };
+        
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                const accuracy = position.coords.accuracy;
+                
+                const googleMapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+                const wazeLink = `https://www.waze.com/ul?ll=${lat},${lng}&navigate=yes`;
+                
+                const locationMsg = `📍 *موقع الزبون (طلب جديد)*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📍 الإحداثيات:\n${lat}, ${lng}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🗺️ *خرائط جوجل:*\n${googleMapsLink}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🗺️ *تطبيق ويز:*\n${wazeLink}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📐 دقة الموقع: ${Math.round(accuracy)} متر`;
+                
+                window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(locationMsg)}`);
+                showToast('✅ تم إرسال الطلب والموقع بنجاح');
+            },
+            (error) => {
+                console.error("خطأ:", error);
+                let errorMsg = "⚠️ لم نتمكن من تحديد موقعك";
+                
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMsg = "⚠️ يرجى السماح بتطبيق الوصول إلى الموقع";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMsg = "⚠️ تعذر الحصول على الموقع، تأكد من تشغيل GPS";
+                        break;
+                    case error.TIMEOUT:
+                        errorMsg = "⚠️ انتهى الوقت، حاول مرة أخرى";
+                        break;
+                }
+                showToast(errorMsg);
+            },
+            options
+        );
     }
     
     function sendOrderWithoutLocation() {
@@ -442,7 +474,7 @@
         
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += `💰 *الإجمالي: ${total} ريال*\n`;
-        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
         msg += "📞 سيتم التواصل مع الزبون لتحديد العنوان";
         
         window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`);
