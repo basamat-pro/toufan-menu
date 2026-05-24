@@ -15,10 +15,10 @@
         :root { --bg: #0a0a0a; --gold: #c5a059; --red: #ff3333; --dark-red: #8b0000; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { margin: 0 !important; padding: 0 !important; max-width: 100%; overflow-x: hidden; background: var(--bg) !important; min-height: 100vh; }
-        body { background: var(--bg) !important; font-family: sans-serif; color: #ffffff; padding: 0; position: relative; padding-top: 115px; }
+        body { background: var(--bg) !important; font-family: 'Tajawal', sans-serif; color: #ffffff; padding: 0; position: relative; padding-top: 115px; }
         .fixed-header { position: fixed; top: 0; left: 0; right: 0; background: var(--bg); z-index: 100; padding: 8px 10px 5px 10px; border-bottom: 1px solid #222; }
         .scroll-content { padding: 8px 10px 85px 10px; }
-        .inp { width:100%; padding:12px; background:#1e1e1e; border:1px solid #333; color:var(--gold); border-radius:8px; margin-bottom:10px; outline:none; }
+        .inp { width:100%; padding:12px; background:#1e1e1e; border:1px solid #333; color:var(--gold); border-radius:8px; margin-bottom:10px; outline:none; font-size:14px; }
         .tabs { display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap; }
         .tab { flex:1; padding:10px; background:#1e1e1e; border:none; color:#aaa; border-radius:5px; font-weight:bold; cursor:pointer; text-align:center; transition:0.2s; }
         .tab:active { transform:scale(0.97); background:#333; }
@@ -75,6 +75,84 @@
         .slogan-box { border: 2px solid var(--gold); border-radius: 20px; padding: 12px 20px; background: rgba(197, 160, 89, 0.05); box-shadow: 0 0 15px rgba(197, 160, 89, 0.2); }
         .splash-slogan { color: var(--gold); font-size: 16px; font-weight: bold; letter-spacing: 1px; line-height: 1.5; margin: 0; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* نافذة إدخال رقم الطاولة المخصصة */
+        .custom-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 20000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .dialog-box {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            width: 85%;
+            max-width: 320px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.3);
+        }
+        .dialog-box h3 {
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .dialog-box p {
+            color: #aaa;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .dialog-input {
+            width: 100%;
+            padding: 14px;
+            background: #0a0a0a;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .dialog-input:focus {
+            border-color: #ffcc66;
+            box-shadow: 0 0 10px rgba(197, 160, 89, 0.5);
+        }
+        .dialog-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .dialog-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+        .dialog-btn.confirm {
+            background: var(--gold);
+            color: #000;
+        }
+        .dialog-btn.cancel {
+            background: #333;
+            color: #fff;
+        }
+        .dialog-btn:active {
+            transform: scale(0.97);
+        }
+        
         @media (max-width: 480px) { body { padding-top: 105px; } .fixed-header { padding: 6px 8px 3px 8px; } .scroll-content { padding: 6px 8px 80px 8px; } .item { padding: 8px 8px; } .splash-logo { width: 100px; height: 100px; } .splash-restaurant { font-size: 28px !important; max-width: 220px; } .splash-slogan { font-size: 14px; } .toast-msg { font-size: 12px; white-space: nowrap; bottom: 70px; } }
     </style>
 </head>
@@ -120,14 +198,14 @@
 
 <div id="modal">
     <div class="modal-body">
-        <h3 style="text-align:center; color:var(--gold); margin-top:0;">سلة طلباتك</h3>
+        <h3 style="text-align:center; color:var(--gold); margin-top:0;">🛒 سلة طلباتك</h3>
         
         <div id="list"></div>
         <h2 id="total" style="text-align:center; color:var(--gold); margin:15px 0;">0 ر.ي</h2>
         
         <div class="order-buttons">
-            <button onclick="sendInternalOrder()" class="internal-btn" style="background:#D4AF37; color:#000;">🏠 طلب داخلي</button>
-            <button onclick="sendExternalOrder()" class="external-btn" style="background:#25d366; color:#000;">📍 طلب خارجي (موقع جغرافي)</button>
+            <button onclick="showInternalDialog()" class="internal-btn" style="background:#D4AF37; color:#000;">🏠 طلب داخلي</button>
+            <button onclick="sendExternalOrder()" class="external-btn" style="background:#25d366; color:#000;">📍 طلب خارجي</button>
         </div>
         
         <div class="split-box" style="margin: 15px 0; padding: 12px; background: #161616; border: 1px dashed var(--gold); border-radius: 12px; text-align: center;">
@@ -147,8 +225,8 @@
             <button onclick="loadFavoriteMeal()" class="action-btn load-fav-btn" style="flex:1;">⭐ استدعاء المفضلة</button>
         </div>
         
-        <button onclick="forceClearCart()" class="action-btn clear-btn">إفراغ السلة 🗑️</button>
-        <button onclick="closeC()" class="action-btn close-btn">إغلاق والعودة للقائمة</button>
+        <button onclick="forceClearCart()" class="action-btn clear-btn">🗑️ إفراغ السلة</button>
+        <button onclick="closeC()" class="action-btn close-btn">❌ إغلاق والعودة للقائمة</button>
     </div>
 </div>
 
@@ -159,678 +237,312 @@
     // ⭐⭐⭐ ضع مصفوفة الأصناف (menuItems) هنا ⭐⭐⭐
     // =============================================
     const menuItems = [
-                { id: 616, name: "ربع بروست", price: 1200, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 96, name: "حبه بروست", price: 4400, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 97, name: "نص بروست", price: 2200, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 98, name: "ربع بروست", price: 1100, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 99, name: "بروست مع روتي موكا", price: 1300, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 100, name: "نفر شبس 400 بروست", price: 400, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 101, name: "صحن ثوم", price: 400, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 102, name: "نص صحن ثوم", price: 200, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 103, name: "شطه", price: 200, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 104, name: "كاتشب", price: 200, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 105, name: "ربع بروست ساده", price: 1000, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 106, name: "روتي موكا", price: 100, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 584, name: "صوص بروست", price: 300, category: "قسم البروست البلدي", meal: "الكل" },
-        { id: 630, name: "صحن مجنونه", price: 900, category: "قسم البوفيه", meal: "الكل" },
-        { id: 336, name: "عصير جلاكسي", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 337, name: "عصير نمبرون", price: 700, category: "قسم البوفيه", meal: "الكل" },
-        { id: 338, name: "عصير افاكادو بالكيوي", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 339, name: "عصير رومان مع العنب", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 340, name: "عصير عنب", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 341, name: "عصير رومان", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 342, name: "عصير اناناس", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 343, name: "عصير كيوي", price: 700, category: "قسم البوفيه", meal: "الكل" },
-        { id: 344, name: "عصير تفاح", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 345, name: "عصير تفاح مع البرتقال", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 346, name: "عصير موز", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 347, name: "عصير موز مع التمر", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 348, name: "عصير برتقال", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 349, name: "عصير برتقال كبس", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 350, name: "عصير عمب", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 352, name: "عصير افكادو", price: 700, category: "قسم البوفيه", meal: "الكل" },
-        { id: 353, name: "عصير مشكل فواكه", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 354, name: "عصير حب حب", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 355, name: "عصير شمام", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 356, name: "عصير موز بالحليب", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 357, name: "عصير مجموع", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 358, name: "عصير عرائسي طوفان الاقصى", price: 500, category: "قسم البوفيه", meal: "الكل" },
-        { id: 359, name: "عصير فخفخينا", price: 500, category: "قسم البوفيه", meal: "الكل" },
-        { id: 360, name: "عصير فراوله", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 361, name: "عصير فراوله بالحليب", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 362, name: "عصير افكادو بالمكسرات", price: 1500, category: "قسم البوفيه", meal: "الكل" },
-        { id: 363, name: "عصير كمثري", price: 700, category: "قسم البوفيه", meal: "الكل" },
-        { id: 364, name: "عصير مكسرات", price: 600, category: "قسم البوفيه", meal: "الكل" },
-        { id: 365, name: "عصير مانجو طبيعي", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 366, name: "عصير مانجو مركز", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 367, name: "عصير ليمون", price: 100, category: "قسم البوفيه", meal: "الكل" },
-        { id: 368, name: "عصير جوافه", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 369, name: "عصير تفاح مع البرتقال", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 370, name: "عصير تفاح كبس", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 371, name: "عصير اناناس مع برتقال", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 372, name: "عصير زنجبيل", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 373, name: "عصير فراوله بالموز", price: 500, category: "قسم البوفيه", meal: "الكل" },
-        { id: 374, name: "عصير طوفان الاقصى", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 375, name: "علبه عصير ليمون", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 376, name: "علبه عصير زنجبيل", price: 900, category: "قسم البوفيه", meal: "الكل" },
-        { id: 377, name: "علبه عصير مانجو مركز", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 378, name: "علبه عصير مشكل فواكه", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 379, name: "علبه عصير جوافه", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 380, name: "علبه عصير مجموع", price: 900, category: "قسم البوفيه", meal: "الكل" },
-        { id: 381, name: "علبه عصير برتقال كبس", price: 3000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 382, name: "علبه عصير برتقال", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 383, name: "علبه عصير تفاح كبس", price: 3000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 384, name: "علبه عصير تفاح", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 385, name: "علبه عصير عنب", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 386, name: "علبه نفاح مع برتقال", price: 1500, category: "قسم البوفيه", meal: "الكل" },
-        { id: 387, name: "علبه عصير حبحب", price: 900, category: "قسم البوفيه", meal: "الكل" },
-        { id: 388, name: "علبه عصير مانجو طبيعي", price: 900, category: "قسم البوفيه", meal: "الكل" },
-        { id: 389, name: "جاك عصير ليمون500", price: 500, category: "قسم البوفيه", meal: "الكل" },
-        { id: 390, name: "جاك عصير ليمون700", price: 700, category: "قسم البوفيه", meal: "الكل" },
-        { id: 391, name: "عصير امير العصائر", price: 800, category: "قسم البوفيه", meal: "الكل" },
-        { id: 392, name: "عصير ملكي", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 393, name: "عصير ليلة الخميس", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 394, name: "عصير مسامير الركب", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 395, name: "عصير تركي", price: 1, category: "قسم البوفيه", meal: "الكل" },
-        { id: 396, name: "عصير معور القلب", price: 700, category: "قسم البوفيه", meal: "الكل" },
-        { id: 397, name: "عصير سيزر", price: 500, category: "قسم البوفيه", meal: "الكل" },
-        { id: 398, name: "عصير الاحلام", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 399, name: "عصير المعلم", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 400, name: "عصير جزر كبس", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 503, name: "قطعة جبن", price: 100, category: "قسم البوفيه", meal: "الكل" },
-        { id: 506, name: "عصير طبقات", price: 400, category: "قسم البوفيه", meal: "الكل" },
-        { id: 507, name: "افكادو مع الفروالة", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 516, name: "جبنه مثلث", price: 50, category: "قسم البوفيه", meal: "الكل" },
-        { id: 522, name: "سندوتش بيض مع جبن مثلث", price: 150, category: "قسم البوفيه", meal: "الكل" },
-        { id: 523, name: "سندوتش مجموع اجبان", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 524, name: "سندوتش مجنونه", price: 350, category: "قسم البوفيه", meal: "الكل" },
-        { id: 525, name: "سندوتش بيض مسلوق", price: 150, category: "قسم البوفيه", meal: "الكل" },
-        { id: 526, name: "سندوتش بيض مقلي", price: 200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 527, name: "سندوتش كرافت مع الجام", price: 250, category: "قسم البوفيه", meal: "الكل" },
-        { id: 528, name: "سندوتش كرافت مع البيض", price: 300, category: "قسم البوفيه", meal: "الكل" },
-        { id: 529, name: "سندوتش كرافت مع الجبن", price: 250, category: "قسم البوفيه", meal: "الكل" },
-        { id: 530, name: "سندوتش كرافت صافي", price: 200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 531, name: "سندوتش بيض", price: 150, category: "قسم البوفيه", meal: "الكل" },
-        { id: 535, name: "عصير ليمون بالنعناع", price: 150, category: "قسم البوفيه", meal: "الكل" },
-        { id: 570, name: "نفر مجنونه", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 571, name: "نص نفر مجنونه", price: 600, category: "قسم البوفيه", meal: "الكل" },
-        { id: 572, name: "نفر جبن وحلاوه", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 573, name: "نص نفر جبن وحلاوة", price: 600, category: "قسم البوفيه", meal: "الكل" },
-        { id: 644, name: "علبه عصير صغير", price: 600, category: "قسم البوفيه", meal: "الكل" },
-        { id: 645, name: "علبه عصير صغير", price: 800, category: "قسم البوفيه", meal: "الكل" },
-        { id: 674, name: "قلص عصير مغربي", price: 1200, category: "قسم البوفيه", meal: "الكل" },
-        { id: 675, name: "قلص عصير ملكي", price: 1000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 690, name: "عصيرطوفان الاقصى ملكي", price: 2000, category: "قسم البوفيه", meal: "الكل" },
-        { id: 617, name: "كنافه عماني", price: 250, category: "قسم الحلويات", meal: "الكل" },
-        { id: 335, name: "جاتو", price: 400, category: "قسم الحلويات", meal: "الكل" },
-        { id: 475, name: "تارت", price: 500, category: "قسم الحلويات", meal: "الكل" },
-        { id: 476, name: "كلير", price: 450, category: "قسم الحلويات", meal: "الكل" },
-        { id: 477, name: "بسبوسه", price: 150, category: "قسم الحلويات", meal: "الكل" },
-        { id: 478, name: "كيك بجوز الهند", price: 150, category: "قسم الحلويات", meal: "الكل" },
-        { id: 585, name: "بنت الصحن", price: 1500, category: "قسم الحلويات", meal: "الكل" },
-        { id: 587, name: "نص بنت الصحن", price: 750, category: "قسم الحلويات", meal: "الكل" },
-        { id: 11, name: "ذبيحه حنيذ مع الرز", price: 48000, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 12, name: "نص ذبيحه حنيذ", price: 25000, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 13, name: "ربع ذبيحه حنيذ", price: 12500, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 14, name: "ثمين ذبيحه حنيذ", price: 6500, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 15, name: "وصله لحم حنيذ", price: 2000, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 22, name: "رأس حنيذ", price: 1500, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 34, name: "حبه دجاج حنيذ", price: 2200, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 35, name: "نص حبه دجاج حنيذ", price: 1100, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 36, name: "ربع حبه دجاج حنيذ", price: 550, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 479, name: "لحم مزموم", price: 2000, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 480, name: "برمه لحم", price: 2000, category: "قسم الحنيذ الدجاج", meal: "غداء" },
-        { id: 30, name: "خبز شامي", price: 50, category: "قسم الخبز الشامي", meal: "الكل" },
-        { id: 83, name: "خبز", price: 100, category: "قسم الخبز الشامي", meal: "الكل" },
-        { id: 625, name: "خبز", price: 100, category: "قسم الخبز الشامي", meal: "الكل" },
-        { id: 146, name: "خبز", price: 100, category: "قسم الخبز الشامي", meal: "الكل" },
-        { id: 21, name: ".", price: 1500, category: "قسم الرز", meal: "غداء" },
-        { id: 46, name: "حبه دجاج مسلوق", price: 2200, category: "قسم الرز", meal: "غداء" },
-        { id: 47, name: "نص حبه دجاج مسلوق", price: 1100, category: "قسم الرز", meal: "غداء" },
-        { id: 48, name: "ربع حبه دجاج مسلوق", price: 550, category: "قسم الرز", meal: "غداء" },
-        { id: 49, name: "رز بشاور", price: 500, category: "قسم الرز", meal: "غداء" },
-        { id: 52, name: "رز بخاري", price: 500, category: "قسم الرز", meal: "غداء" },
-        { id: 53, name: "رز زربيان", price: 500, category: "قسم الرز", meal: "غداء" },
-        { id: 54, name: "رز عربي", price: 500, category: "قسم الرز", meal: "غداء" },
-        { id: 55, name: "رز برياني", price: 500, category: "قسم الرز", meal: "غداء" },
-        { id: 56, name: "رز حراق", price: 500, category: "قسم الرز", meal: "غداء" },
-        { id: 57, name: "نص نفر رز بشاور", price: 250, category: "قسم الرز", meal: "غداء" },
-        { id: 60, name: "نص نفر رز بخاري", price: 250, category: "قسم الرز", meal: "غداء" },
-        { id: 61, name: "نص نفر رز زربيان", price: 250, category: "قسم الرز", meal: "غداء" },
-        { id: 485, name: "نص نفر رز عربي", price: 250, category: "قسم الرز", meal: "غداء" },
-        { id: 486, name: "نص نفر رز برياني", price: 250, category: "قسم الرز", meal: "غداء" },
-        { id: 487, name: "نص نفر رز حراق", price: 250, category: "قسم الرز", meal: "غداء" },
-        { id: 496, name: "نص دجاج زربيان", price: 1100, category: "قسم الرز", meal: "غداء" },
-        { id: 514, name: "حبه دجاج زربيان", price: 2200, category: "قسم الرز", meal: "غداء" },
-        { id: 515, name: "ربع حبه دجاج زربيان", price: 550, category: "قسم الرز", meal: "غداء" },
-        { id: 614, name: "نفر رز مضغوط", price: 600, category: "قسم الرز", meal: "غداء" },
-        { id: 615, name: "نفر رز بشاور", price: 600, category: "قسم الرز", meal: "غداء" },
-        { id: 626, name: "نص نفر رز بشاور", price: 300, category: "قسم الرز", meal: "غداء" },
-        { id: 62, name: "نفر فحسة", price: 3000, category: "قسم السلته والفحسة", meal: "غداء" },
-        { id: 63, name: "نص نفر فحسة", price: 1500, category: "قسم السلته والفحسة", meal: "غداء" },
-        { id: 64, name: "نفر فحسة غنمي", price: 3000, category: "قسم السلته والفحسة", meal: "غداء" },
-        { id: 65, name: "نص نفر فحسة غنمي", price: 1500, category: "قسم السلته والفحسة", meal: "غداء" },
-        { id: 66, name: "نفر سلتة", price: 1500, category: "قسم السلته والفحسة", meal: "غداء" },
-        { id: 67, name: "نص نفر سلتة", price: 800, category: "قسم السلته والفحسة", meal: "غداء" },
-        { id: 488, name: "مرق 100", price: 100, category: "قسم السلته والفحسة", meal: "غداء" },
-        { id: 489, name: "سلته مع التونة", price: 2500, category: "قسم السلته والفحسة", meal: "غداء" },
-        { id: 490, name: "مرق 200", price: 200, category: "قسم السلته والفحسة", meal: "غداء" },
-        { id: 624, name: "سحاوق ابو 100", price: 100, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 294, name: "سحاوق عادي", price: 200, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 295, name: "سحاوق جبن 200", price: 200, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 296, name: "سحاوق جبن", price: 400, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 297, name: "سحاوق فحسه", price: 400, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 298, name: "سحاوق جبن وقشطه", price: 1000, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 299, name: "سحاوق جبن وقشطه 500", price: 500, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 302, name: "زبادي مع السحاوق", price: 300, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 303, name: "قشطه", price: 300, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 304, name: "سحاوق", price: 100, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 578, name: "صحن فواكه", price: 1000, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 611, name: "سلطه", price: 100, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 663, name: "وجبة افطار", price: 1000, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 664, name: "وجبة افطار", price: 1700, category: "قسم السلطات والسحاوق", meal: "الكل" },
-        { id: 629, name: "وصله سمك 220جرام", price: 800, category: "قسم السمك", meal: "الكل" },
-        { id: 421, name: "كيلو سمك ديرك", price: 6000, category: "قسم السمك", meal: "الكل" },
-        { id: 422, name: "نص كيلو سمك ديرك", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 423, name: "ربع كيلو سمك ديرك", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 424, name: "كيلو سمك ابو مقص", price: 6000, category: "قسم السمك", meal: "الكل" },
-        { id: 425, name: "نص كيلو سمك ابو مقص", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 426, name: "كيلو سمك اصابع", price: 6000, category: "قسم السمك", meal: "الكل" },
-        { id: 427, name: "نص كيلو سمك اصابع", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 428, name: "ربع كيلو سمك اصابع", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 429, name: "كيلو سمك جحش", price: 6000, category: "قسم السمك", meal: "الكل" },
-        { id: 430, name: "نص كيلو سمك جحش", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 431, name: "ربع كيلو سمك جحش", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 432, name: "كيلو جمبري", price: 6000, category: "قسم السمك", meal: "الكل" },
-        { id: 433, name: "نص كيلو جمبري", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 434, name: "ربع كيلو جمبري", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 435, name: "كيلو سمك بياض", price: 6000, category: "قسم السمك", meal: "الكل" },
-        { id: 436, name: "نص كيلو سمك بياض", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 437, name: "ربع كيلو سمك بياض", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 438, name: "نفر صالونه سمك", price: 1200, category: "قسم السمك", meal: "الكل" },
-        { id: 439, name: "سمك", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 440, name: "كيلو قد اصفر", price: 5000, category: "قسم السمك", meal: "الكل" },
-        { id: 441, name: "نص كيلو قد اصفر", price: 2500, category: "قسم السمك", meal: "الكل" },
-        { id: 442, name: "ريع كيلو قد اصفر", price: 1250, category: "قسم السمك", meal: "الكل" },
-        { id: 443, name: "كيلو سمك ديرك وسط", price: 5000, category: "قسم السمك", meal: "الكل" },
-        { id: 444, name: "سمك ابو500", price: 500, category: "قسم السمك", meal: "الكل" },
-        { id: 445, name: "كيلو سمك لخم اصابع", price: 6000, category: "قسم السمك", meal: "الكل" },
-        { id: 446, name: "نص كيلو سمك لخم اصابع", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 447, name: "ربع كيلو سمك لخم اصابع", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 586, name: "صانونة سمك", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 588, name: "لخم صافي بدون طباخة", price: 3500, category: "قسم السمك", meal: "الكل" },
-        { id: 589, name: "سمك ديرك صغير", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 590, name: "قد اسود", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 591, name: "نص كيلو قد اسود", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 592, name: "ربع كيلو قد اسود", price: 750, category: "قسم السمك", meal: "الكل" },
-        { id: 593, name: "سمك بياض", price: 2500, category: "قسم السمك", meal: "الكل" },
-        { id: 594, name: "نص سمك بياض", price: 1250, category: "قسم السمك", meal: "الكل" },
-        { id: 595, name: "ربع سمك بياض", price: 650, category: "قسم السمك", meal: "الكل" },
-        { id: 596, name: "كيلو سمك جحش", price: 5000, category: "قسم السمك", meal: "الكل" },
-        { id: 597, name: "نص كيلو سمك جحش", price: 2500, category: "قسم السمك", meal: "الكل" },
-        { id: 598, name: "ربع كيلو سمك جحش", price: 1250, category: "قسم السمك", meal: "الكل" },
-        { id: 599, name: "كيلو سمك عربي", price: 4500, category: "قسم السمك", meal: "الكل" },
-        { id: 600, name: "نص كيلو سمك عربي", price: 2250, category: "قسم السمك", meal: "الكل" },
-        { id: 601, name: "ربع كيلو سمك عربي", price: 1200, category: "قسم السمك", meal: "الكل" },
-        { id: 602, name: "كيلو سمك هامور", price: 3500, category: "قسم السمك", meal: "الكل" },
-        { id: 603, name: "نص كيلو سمك هامور", price: 1750, category: "قسم السمك", meal: "الكل" },
-        { id: 604, name: "ربع كيلو سمك هامور", price: 900, category: "قسم السمك", meal: "الكل" },
-        { id: 605, name: "كيلو سمك سلفش", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 606, name: "نص كيلو سمك سلفش", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 607, name: "ربع كيلو سمك سلفش", price: 750, category: "قسم السمك", meal: "الكل" },
-        { id: 608, name: "كيلو سمك عنفلوس", price: 3000, category: "قسم السمك", meal: "الكل" },
-        { id: 609, name: "نص كيلو سمك عنفلوس", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 610, name: "ربع كيلو سمك عنفلوس", price: 750, category: "قسم السمك", meal: "الكل" },
-        { id: 639, name: "عقدة سمك (ربيس)", price: 1500, category: "قسم السمك", meal: "الكل" },
-        { id: 641, name: "سمك ابو 100", price: 100, category: "قسم السمك", meal: "الكل" },
-        { id: 677, name: "نص صالونه", price: 800, category: "قسم السمك", meal: "الكل" },
-        { id: 678, name: "نص عقدة سمك", price: 800, category: "قسم السمك", meal: "الكل" },
-        { id: 448, name: "فلافل دبل مع الجبن", price: 200, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 449, name: "فلافل دبل مع الجبن والبيض", price: 250, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 450, name: "فلافل دبل مع حبه بيض وجبن", price: 300, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 451, name: "فلافل عربي", price: 400, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 452, name: "فلافل عربي 500", price: 500, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 453, name: "نفر فلافل", price: 1000, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 454, name: "طعميه ساده 100", price: 100, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 455, name: "طعميه ساده 250", price: 250, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 456, name: "طعميه ساده 300", price: 300, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 457, name: "شبس 200", price: 200, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 458, name: "شبس 250", price: 250, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 459, name: "شبس 300", price: 300, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 460, name: "فلافل عادي", price: 150, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 504, name: "قطعة جبن", price: 100, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 579, name: "شبس 400 فلافل", price: 400, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 583, name: "صحن فلافل طوفان الاقصى", price: 700, category: "قسم السنبوسة والفلافل", meal: "صبوح وعشاء" },
-        { id: 622, name: "ثلاجة شاهي حليب", price: 1000, category: "قسم الشاهي", meal: "الكل" },
-        { id: 623, name: "ثلاجة شاهي احمر", price: 500, category: "قسم الشاهي", meal: "الكل" },
-        { id: 281, name: "براد شاهي احمر", price: 300, category: "قسم الشاهي", meal: "الكل" },
-        { id: 282, name: "براد شاهي حليب", price: 450, category: "قسم الشاهي", meal: "الكل" },
-        { id: 283, name: "قهوة", price: 150, category: "قسم الشاهي", meal: "الكل" },
-        { id: 284, name: "شاهي حليب", price: 150, category: "قسم الشاهي", meal: "الكل" },
-        { id: 285, name: "شاهي احمر", price: 50, category: "قسم الشاهي", meal: "الكل" },
-        { id: 286, name: "بن بالحليب", price: 200, category: "قسم الشاهي", meal: "الكل" },
-        { id: 287, name: "بن عادي", price: 100, category: "قسم الشاهي", meal: "الكل" },
-        { id: 288, name: "شاهي حليب عدني", price: 200, category: "قسم الشاهي", meal: "الكل" },
-        { id: 289, name: "حليب مفور", price: 200, category: "قسم الشاهي", meal: "الكل" },
-        { id: 290, name: "قوطي حليب", price: 300, category: "قسم الشاهي", meal: "الكل" },
-        { id: 291, name: "قوطي حليب مفور", price: 400, category: "قسم الشاهي", meal: "الكل" },
-        { id: 292, name: "قوطي شاهي احمر", price: 200, category: "قسم الشاهي", meal: "الكل" },
-        { id: 293, name: "زنجبيل قهوه", price: 100, category: "قسم الشاهي", meal: "الكل" },
-        { id: 505, name: "زنجبيل قهوة حليب مفور", price: 200, category: "قسم الشاهي", meal: "الكل" },
-        { id: 512, name: "صحه شاهي", price: 300, category: "قسم الشاهي", meal: "الكل" },
-        { id: 254, name: "شاورما لبناني دجاج", price: 300, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 255, name: "شاورما لبناني دجاج مع الجبن", price: 400, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 256, name: "شاورما عربي دجاج", price: 500, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 257, name: "شاورما عربي دجاج مع الجبن", price: 600, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 258, name: "شاورما صاروخ دجاج مع الجبن", price: 1000, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 259, name: "شاورما صاروخ دجاج", price: 700, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 260, name: "شاورما عربي دجاج مقطع", price: 1000, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 261, name: "شاورما عربي دجاج مقطع مع الجبن", price: 1300, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 262, name: "صحن شاورما دجاج مبشور", price: 1500, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 263, name: "شاورما دجاج اسبيشل", price: 1500, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 264, name: "صحن شاورما طوفان الاقصى", price: 2000, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 265, name: "صوص شاورما", price: 300, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 266, name: "ثوم", price: 300, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 267, name: "صحن مخلل", price: 300, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 268, name: "صوص طحينية", price: 300, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 269, name: "شاورما لحم", price: 700, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 270, name: "شاورما لحم مع الجبن", price: 800, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 271, name: "شاورما لحم صاروخ", price: 1000, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 272, name: "شاورما لبناني لحم", price: 500, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 273, name: "شاورما جامبو لحم", price: 1500, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 274, name: "صحن شاورما مبشور", price: 1500, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 275, name: "صحن شاورما عربي مقطع", price: 1200, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 276, name: "شوارمه طوفان الاقصى", price: 3000, category: "قسم الشوارما", meal: "صبوح وعشاء" },
-        { id: 463, name: "عريكه صغير", price: 700, category: "قسم العريكة", meal: "غداء" },
-        { id: 464, name: "عريكه طبقات", price: 1500, category: "قسم العريكة", meal: "غداء" },
-        { id: 465, name: "عريكه ملكي", price: 1500, category: "قسم العريكة", meal: "غداء" },
-        { id: 466, name: "عريكه كاجو", price: 2000, category: "قسم العريكة", meal: "غداء" },
-        { id: 468, name: "معصوب موز صافي", price: 700, category: "قسم العريكة", meal: "غداء" },
-        { id: 469, name: "معصوب عسل صافي", price: 700, category: "قسم العريكة", meal: "غداء" },
-        { id: 470, name: "معصوب بالحليب", price: 800, category: "قسم العريكة", meal: "غداء" },
-        { id: 472, name: "معصوب قشطه بدون عسل", price: 800, category: "قسم العريكة", meal: "غداء" },
-        { id: 473, name: "معصوب ملكي", price: 1300, category: "قسم العريكة", meal: "غداء" },
-        { id: 491, name: "فته دخن صافي", price: 400, category: "قسم العريكة", meal: "غداء" },
-        { id: 508, name: "نفر فته بر صافي", price: 500, category: "قسم العريكة", meal: "غداء" },
-        { id: 509, name: "فته دخن قشطه وعسل", price: 1000, category: "قسم العريكة", meal: "غداء" },
-        { id: 510, name: "فته صافي", price: 0, category: "قسم العريكة", meal: "غداء" },
-        { id: 511, name: "نص فته صافي", price: 0, category: "قسم العريكة", meal: "غداء" },
-        { id: 513, name: "قشطه", price: 300, category: "قسم العريكة", meal: "غداء" },
-        { id: 518, name: "معصوب بالموز قشطه وعسل", price: 800, category: "قسم العريكة", meal: "غداء" },
-        { id: 519, name: "فته زبيدي", price: 1000, category: "قسم العريكة", meal: "غداء" },
-        { id: 582, name: "معصوب طوفان الاقصى", price: 800, category: "قسم العريكة", meal: "غداء" },
-        { id: 640, name: "عريكة ابو 1000", price: 1000, category: "قسم العريكة", meal: "غداء" },
-        { id: 679, name: "نص فته بر صافي", price: 300, category: "قسم العريكة", meal: "غداء" },
-        { id: 43, name: "حبه دجاج فحم", price: 2200, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 44, name: "نص حبه دجاج فحم", price: 1100, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 45, name: "ربع حبه دجاج فحم", price: 550, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 574, name: "حبه دجاج سلطاني", price: 3000, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 575, name: "نص حبه دجاج سلطاني", price: 1500, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 576, name: "ربع حبه دجاج سلطاني", price: 750, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 179, name: "شيش طاوق", price: 1200, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 180, name: "اوصال لحم", price: 2000, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 181, name: "ريش لحم", price: 2500, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 182, name: "جوانح دجاج", price: 1500, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 183, name: "دجاج سلطاني", price: 1500, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 184, name: "مشكل مشاوي طوفان الاقصى", price: 8000, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 185, name: "مشكل مشاوي طوفان الاقصى وسط", price: 6000, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 186, name: "مشكل مشاوي طوفان الاقصى صغير", price: 4000, category: "قسم الفحم والمشاوي", meal: "غداء" },
-        { id: 177, name: "كباب لحم", price: 1500, category: "قسم الكباب", meal: "صبوح وعشاء" },
-        { id: 178, name: "كباب دجاج", price: 1500, category: "قسم الكباب", meal: "صبوح وعشاء" },
-        { id: 187, name: "ساندوتش كباب", price: 300, category: "قسم الكباب", meal: "صبوح وعشاء" },
-        { id: 188, name: "ساندوتش كباب دبل3", price: 350, category: "قسم الكباب", meal: "صبوح وعشاء" },
-        { id: 189, name: "ساندوتش كباب خبز عربي", price: 500, category: "قسم الكباب", meal: "صبوح وعشاء" },
-        { id: 190, name: "نص نفر كباب لحم", price: 800, category: "قسم الكباب", meal: "صبوح وعشاء" },
-        { id: 191, name: "نفر كباب فحسه", price: 2000, category: "قسم الكباب", meal: "صبوح وعشاء" },
-        { id: 618, name: "كنافه سويسري", price: 300, category: "قسم الكنافه", meal: "الكل" },
-        { id: 1, name: "قطعه زنود", price: 100, category: "قسم الكنافه", meal: "الكل" },
-        { id: 315, name: "كنافة اصابع 6 قطع", price: 700, category: "قسم الكنافه", meal: "الكل" },
-        { id: 316, name: "كنافة ميني  2 قطع", price: 700, category: "قسم الكنافه", meal: "الكل" },
-        { id: 317, name: "كنافة بالقشطة صغير", price: 500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 318, name: "كنافة بالجبنة", price: 700, category: "قسم الكنافه", meal: "الكل" },
-        { id: 319, name: "كنافة بالنوتيلا", price: 800, category: "قسم الكنافه", meal: "الكل" },
-        { id: 320, name: "كنافة لوتس", price: 800, category: "قسم الكنافه", meal: "الكل" },
-        { id: 321, name: "كنافة بستاشيو", price: 800, category: "قسم الكنافه", meal: "الكل" },
-        { id: 322, name: "كنافة كيندر", price: 1000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 323, name: "كنافة جلاكسي", price: 1000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 324, name: "كنافة مارس", price: 1000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 325, name: "كنافة كراتشي", price: 500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 326, name: "كنافة سجنتشر", price: 1000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 327, name: "كنافه اساور 5 قطع", price: 500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 328, name: "كنافه عش البلبل 6 قطع", price: 500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 329, name: "كنافه ماكس صغير", price: 1000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 330, name: "كنافه قشطه دبل", price: 1000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 331, name: "كنافه بالقشطه وسط", price: 1200, category: "قسم الكنافه", meal: "الكل" },
-        { id: 332, name: "كنافه بالقشطه كبير", price: 1700, category: "قسم الكنافه", meal: "الكل" },
-        { id: 333, name: "كنافه بالقشطه عائلي", price: 2500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 334, name: "كنافه طوفان الاقصى", price: 700, category: "قسم الكنافه", meal: "الكل" },
-        { id: 497, name: "كنافه ميني كبير2 قطع", price: 700, category: "قسم الكنافه", meal: "الكل" },
-        { id: 498, name: "كنافه برنس لوتس", price: 1000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 499, name: "كنافه ماكس وسط", price: 1500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 500, name: "كنافه ماكس كبير", price: 2000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 501, name: "كنافه ماكس عائلي", price: 3000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 502, name: "كنافه بريك", price: 1000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 612, name: "شوكلاتة دبي", price: 300, category: "قسم الكنافه", meal: "الكل" },
-        { id: 649, name: "بسبوسه ساده", price: 100, category: "قسم الكنافه", meal: "الكل" },
-        { id: 650, name: "قطعة السمك", price: 250, category: "قسم الكنافه", meal: "الكل" },
-        { id: 651, name: "بقلاوه", price: 50, category: "قسم الكنافه", meal: "الكل" },
-        { id: 652, name: "بقلاوه محشي", price: 50, category: "قسم الكنافه", meal: "الكل" },
-        { id: 653, name: "اقماع", price: 250, category: "قسم الكنافه", meal: "الكل" },
-        { id: 654, name: "بسبوسه قشطه", price: 100, category: "قسم الكنافه", meal: "الكل" },
-        { id: 655, name: "بسبوسه شكلاته", price: 100, category: "قسم الكنافه", meal: "الكل" },
-        { id: 656, name: "كرميلا", price: 200, category: "قسم الكنافه", meal: "الكل" },
-        { id: 657, name: "جيلي", price: 200, category: "قسم الكنافه", meal: "الكل" },
-        { id: 658, name: "محلبيه", price: 100, category: "قسم الكنافه", meal: "الكل" },
-        { id: 659, name: "شربه", price: 100, category: "قسم الكنافه", meal: "الكل" },
-        { id: 660, name: "رواني", price: 100, category: "قسم الكنافه", meal: "الكل" },
-        { id: 661, name: "رواني", price: 300, category: "قسم الكنافه", meal: "الكل" },
-        { id: 662, name: "حلويات طوفان الاقصى", price: 1000, category: "قسم الكنافه", meal: "الكل" },
-        { id: 665, name: "تمر", price: 100, category: "قسم الكنافه", meal: "الكل" },
-        { id: 666, name: "ترجله", price: 500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 682, name: "حلاء ترفل", price: 500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 683, name: "بسبوسه", price: 1, category: "قسم الكنافه", meal: "الكل" },
-        { id: 684, name: "كعك با شوكلاته", price: 500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 685, name: "دلوني عليك", price: 500, category: "قسم الكنافه", meal: "الكل" },
-        { id: 620, name: "نفر كبدة صغير", price: 1500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 621, name: "نفر لحم صغار", price: 1500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 693, name: "كيلوه لحم ني", price: 6000, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 694, name: "نصف كيلوه لحم ني", price: 3000, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 695, name: "ربع كيلوه لحم ني", price: 1500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 696, name: "كيلوه لحم ني (صافي)", price: 10000, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 697, name: "نصف كيلوه لحم ني (صافي)", price: 5000, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 698, name: "ربع كيلوه لحم ني (صافي)", price: 2500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 108, name: "نفر ونص لحم صغار", price: 2500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 110, name: "نص نفر كبده", price: 800, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 111, name: "نفر دقة بلدي", price: 1500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 112, name: "نفر لحم صغار", price: 1500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 113, name: "حبه كبده غنمي كبير", price: 4000, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 114, name: "نص كبده غنمي وسط", price: 2000, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 115, name: "نفر كبده عجل", price: 1500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 116, name: "كبده طوفان الاقصى", price: 1500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 117, name: "كبده سبايسي", price: 1500, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 118, name: "نفرماكس", price: 1600, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 119, name: "نص نفر ماكس", price: 800, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 536, name: "نص نفر لحم صغار", price: 800, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 636, name: "حبه كبده صغير", price: 3000, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 681, name: "لحم ني", price: 1000, category: "قسم اللحوم", meal: "صبوح وعشاء" },
-        { id: 75, name: "عقدة لحم", price: 2500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 76, name: "فته مرق", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 79, name: "تونة غويزي", price: 1000, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 80, name: "تونة راقي كبير", price: 800, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 81, name: "تونة راقي صغير", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 82, name: "تونة مدخنة", price: 800, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 577, name: "ربع عقدة بروست", price: 1500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 613, name: "ربع نصف عقدة", price: 700, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 633, name: "نص نفر فاصوليا", price: 300, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 634, name: "نص نفر بيض", price: 300, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 689, name: "فته حارق", price: 2500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 107, name: "نفر عقدة لحم", price: 3000, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 120, name: "نفر فول مع البيض حرضه", price: 600, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 121, name: "نفر فول حرضه", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 122, name: "نفر فاصوليا عادي حرضه", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 123, name: "نفر فاصوليا مع البيض حرضه", price: 600, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 124, name: "نفر فاصوليا مع البيض ناشف", price: 600, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 125, name: "نفر فاصوليا حمراء رطب", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 126, name: "نفر فاصوليا حمراء ناشف", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 128, name: "فول مع الدقة", price: 1300, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 129, name: "سداسي", price: 1400, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 130, name: "مثلوث", price: 600, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 131, name: "بيض لحسه", price: 600, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 132, name: "نفر بيض", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 133, name: "بيض فرم", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 134, name: "حبه كبده غنمي وسط", price: 3500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 135, name: "بيض عيون", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 136, name: "بيض سادة", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 137, name: "شكشوكه", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 138, name: "تونة غويزي", price: 1000, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 139, name: "تونة راقي كبير", price: 800, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 140, name: "تونة راقي صغير", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 141, name: "تونة مدخنة", price: 800, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 147, name: "علبه بزاليا ساده", price: 1000, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 148, name: "علبه بزاليا مع البيض", price: 1200, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 149, name: "علبه فول ساده", price: 1000, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 150, name: "علبه فول مع البيض", price: 1200, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 151, name: "علبه فاصوليا ساده", price: 1000, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 152, name: "علبه فاصوليا مع البيض", price: 1200, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 153, name: "نص علبه فاصوليا ساده", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 154, name: "نص علبه فاصوليا مع البيض", price: 600, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 155, name: "نص علبه فول ساده", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 156, name: "نص علبه فول مع البيض", price: 600, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 461, name: "نص علبه بزاليا ساده", price: 500, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 462, name: "نص علبه بزاليا مع البيض", price: 600, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 481, name: "نص نفر فاصوليا", price: 250, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 482, name: "نص نفر فول", price: 250, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 483, name: "نص نفر فاصوليا مع البيض", price: 300, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 484, name: "نص نفر فول مع البيض", price: 300, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 517, name: "جبنه مثلث", price: 50, category: "قسم المحروقات", meal: "صبوح وعشاء" },
-        { id: 88, name: "خبز دبل", price: 500, category: "قسم المخبازة", meal: "الكل" },
-        { id: 89, name: "خبز دبل مع الرشه", price: 500, category: "قسم المخبازة", meal: "الكل" },
-        { id: 90, name: "خبز دبل مع البيض", price: 600, category: "قسم المخبازة", meal: "الكل" },
-        { id: 91, name: "خبز مثلث", price: 800, category: "قسم المخبازة", meal: "الكل" },
-        { id: 92, name: "خبز مثلث مع البيض", price: 1000, category: "قسم المخبازة", meal: "الكل" },
-        { id: 93, name: "خبز مربع", price: 1000, category: "قسم المخبازة", meal: "الكل" },
-        { id: 94, name: "خبز مربع مع البيض", price: 1200, category: "قسم المخبازة", meal: "الكل" },
-        { id: 95, name: "خبز مسدس", price: 2000, category: "قسم المخبازة", meal: "الكل" },
-        { id: 474, name: "خبز سنجل", price: 250, category: "قسم المخبازة", meal: "الكل" },
-        { id: 495, name: "خبز رطب كرس", price: 600, category: "قسم المخبازة", meal: "الكل" },
-        { id: 467, name: "فته تمر", price: 600, category: "قسم المخبازة", meal: "الكل" },
-        { id: 627, name: "ماء", price: 100, category: "قسم المشروبات الغازية والمياه المعدنية", meal: "الكل" },
-        { id: 628, name: "مشروب غازي ابو200", price: 200, category: "قسم المشروبات الغازية والمياه المعدنية", meal: "الكل" },
-        { id: 301, name: "زبادي", price: 150, category: "قسم المشروبات الغازية والمياه المعدنية", meal: "الكل" },
-        { id: 305, name: "حبه ماء طوفان الاقصى", price: 100, category: "قسم المشروبات الغازية والمياه المعدنية", meal: "الكل" },
-        { id: 306, name: "قوة اسد علب", price: 200, category: "قسم المشروبات الغازية والمياه المعدنية", meal: "الكل" },
-        { id: 307, name: "قوة اسد بلاستيك", price: 200, category: "قسم المشروبات الغازية والمياه المعدنية", meal: "الكل" },
-        { id: 68, name: "مشكل عادي", price: 500, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 69, name: "مشكل فرن", price: 500, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 70, name: "مشكل فرن مع الملوخية", price: 500, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 71, name: "ملوخية عادي", price: 500, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 72, name: "بامية", price: 500, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 73, name: "محشي باللحم", price: 500, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 74, name: "مسقع", price: 500, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 77, name: "نص عقدة دجاج", price: 2400, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 78, name: "ربع عقدة دجاج", price: 1200, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 492, name: "نص نفر مشكل عادي", price: 250, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 493, name: "نص نفر مشكل فرن", price: 250, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 494, name: "نص نفر ملوخية", price: 250, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 619, name: "نفر مشكل فرن", price: 600, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 109, name: "نفر عقدة دجاج", price: 1200, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 234, name: "مكرونة عادي", price: 400, category: "قسم المشكلات والأدامات", meal: "غداء" },
-        { id: 16, name: "ذبيحه مضغوط مع الرز", price: 56000, category: "قسم المضغوط", meal: "الكل" },
-        { id: 17, name: "نص ذبيحه مضغوط", price: 24000, category: "قسم المضغوط", meal: "الكل" },
-        { id: 18, name: "ربع ذبيحه مضغوط", price: 12000, category: "قسم المضغوط", meal: "الكل" },
-        { id: 19, name: "ثمين ذبيحه مضغوط", price: 6000, category: "قسم المضغوط", meal: "الكل" },
-        { id: 20, name: "وصله لحم مضغوط", price: 2500, category: "قسم المضغوط", meal: "الكل" },
-        { id: 37, name: "حبه دجاج مضغوط", price: 2200, category: "قسم المضغوط", meal: "الكل" },
-        { id: 38, name: "نص حبه دجاج مضغوط", price: 1100, category: "قسم المضغوط", meal: "الكل" },
-        { id: 39, name: "ربع حبه دجاج مضغوط", price: 550, category: "قسم المضغوط", meal: "الكل" },
-        { id: 51, name: "رز مضغوط", price: 500, category: "قسم المضغوط", meal: "الكل" },
-        { id: 59, name: "نص نفر رز مضغوط", price: 250, category: "قسم المضغوط", meal: "الكل" },
-        { id: 520, name: "نص مضغوط مع الرز", price: 1600, category: "قسم المضغوط", meal: "الكل" },
-        { id: 401, name: "مطبق عادي", price: 400, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 402, name: "مطبق دبل بيض", price: 500, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 403, name: "مطبق دقه مع البيض", price: 1000, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 404, name: "مطبق تونة مع البيض", price: 800, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 405, name: "مطبق جبن مثلث مع البيض", price: 500, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 406, name: "مطبق جبن مالح مع البيض", price: 500, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 407, name: "مطبق جبن كرافت مع البيض", price: 600, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 408, name: "مطبق اجبان مالح", price: 800, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 409, name: "مطبق ماكس مالح", price: 1200, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 410, name: "مطبق قشطة", price: 600, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 411, name: "مطبق حلو", price: 600, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 412, name: "مطبق دبل بيض وجبن مثلث", price: 600, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 413, name: "مطبق دبل بيض ودقه", price: 1300, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 414, name: "مطبق دبل بيض وجبن مالح", price: 700, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 415, name: "مطبق دبل بيض وجبنه كرافت", price: 800, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 416, name: "مطبق جبن حلو", price: 600, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 417, name: "مطبق بالموز", price: 500, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 418, name: "مطبق جبنه سائل", price: 600, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 419, name: "مطبق اجبان حلو", price: 600, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 420, name: "مطبق ماكس حلو", price: 1000, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 532, name: "مطبق بيض", price: 300, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 580, name: "مطبق تونه مع الجبن", price: 1000, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 581, name: "مطبق تونه", price: 700, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 637, name: "مطبق طوفان الاقصى", price: 1500, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 638, name: "مطبق اجبان1000", price: 1000, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 642, name: "مخلوطه", price: 100, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 648, name: "سمبوسة", price: 100, category: "قسم المطبق", meal: "صبوح وعشاء" },
-        { id: 157, name: "حمص", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 158, name: "متبل", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 159, name: "تبوله", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 160, name: "شفوت", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 161, name: "بابا غنوج", price: 600, category: "قسم المقبلات", meal: "الكل" },
-        { id: 162, name: "سلطة زيتون", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 163, name: "سلطة طحينية", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 164, name: "سلطة مايونيز", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 165, name: "سلطة شرقية", price: 700, category: "قسم المقبلات", meal: "الكل" },
-        { id: 166, name: "سطة طوفان الاقصى اسبيشل", price: 2000, category: "قسم المقبلات", meal: "الكل" },
-        { id: 167, name: "سلطة طوفان الاقصى كبير", price: 1500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 168, name: "سلطة طوفان الاقصى صغير", price: 1000, category: "قسم المقبلات", meal: "الكل" },
-        { id: 169, name: "سلطة بالبيض", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 170, name: "سلطة شمندر", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 171, name: "سلطة حار", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 172, name: "سلطة فتوش", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 173, name: "سلطة روسي", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 174, name: "خيار باللبن", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 175, name: "سلطة عادي", price: 300, category: "قسم المقبلات", meal: "الكل" },
-        { id: 176, name: "سلطة عربي", price: 400, category: "قسم المقبلات", meal: "الكل" },
-        { id: 300, name: "سلطه تونة", price: 500, category: "قسم المقبلات", meal: "الكل" },
-        { id: 2, name: "ذبيحه مندي مع الرز", price: 56000, category: "قسم المندي", meal: "غداء" },
-        { id: 3, name: "نص ذبيحه مندي", price: 25000, category: "قسم المندي", meal: "غداء" },
-        { id: 4, name: "ربع ذبيحه مندي", price: 12500, category: "قسم المندي", meal: "غداء" },
-        { id: 5, name: "ثمين ذبيحه مندي", price: 6500, category: "قسم المندي", meal: "غداء" },
-        { id: 6, name: "وصله لحم مندي", price: 2500, category: "قسم المندي", meal: "غداء" },
-        { id: 7, name: "ذبيحه مفطح مع الرز", price: 60000, category: "قسم المندي", meal: "غداء" },
-        { id: 8, name: "ذبيحه كوزي مع الرز", price: 60000, category: "قسم المندي", meal: "غداء" },
-        { id: 9, name: "ذبيحه محشي مع الرز", price: 60000, category: "قسم المندي", meal: "غداء" },
-        { id: 10, name: "ذبيحه برياني مع الرز", price: 60000, category: "قسم المندي", meal: "غداء" },
-        { id: 23, name: "رأس مندي", price: 1500, category: "قسم المندي", meal: "غداء" },
-        { id: 40, name: "حبه دجاج مندي", price: 2200, category: "قسم المندي", meal: "غداء" },
-        { id: 41, name: "نص حبه دجاج مندي", price: 1100, category: "قسم المندي", meal: "غداء" },
-        { id: 42, name: "ربع حبه دجاج مندي", price: 550, category: "قسم المندي", meal: "غداء" },
-        { id: 50, name: "رز مندي", price: 500, category: "قسم المندي", meal: "غداء" },
-        { id: 58, name: "نص نفر رز مندي", price: 250, category: "قسم المندي", meal: "غداء" },
-        { id: 521, name: "نص مندي مع الرز", price: 1600, category: "قسم المندي", meal: "غداء" },
-        { id: 632, name: "نفر رز مندي", price: 600, category: "قسم المندي", meal: "غداء" },
-        { id: 195, name: "بيتزا طوفان الاقصى كبير", price: 4000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 196, name: "بيتزا طوفان الاقصى وسط", price: 3500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 197, name: "بيتزا طوفان الاقصى صغير", price: 2500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 198, name: "بيتزا اسبيشل كبير", price: 3000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 199, name: "بيتزا اسبيشل وسط", price: 2500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 200, name: "بيتزا اسبيشل صغير", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 201, name: "بيتزا دجاج كبير", price: 3500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 202, name: "بيتزا دجاج وسط", price: 3000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 203, name: "بيتزا دجاج صغير", price: 2500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 204, name: "بيتزا نقانق كبير", price: 3000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 205, name: "بيتزا نقانق وسط", price: 2500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 206, name: "بيتزا نقانق صغير", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 207, name: "بيتزا خضار كبير", price: 2500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 208, name: "بيتزا خضار وسط", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 209, name: "بيتزا خضار صغير", price: 1500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 210, name: "بيتزا لحم كبير", price: 3500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 211, name: "بيتزا لحم وسط", price: 3000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 212, name: "بيتزا لحم صغير", price: 2500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 213, name: "بيتزا عش البلبل كبير", price: 2500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 214, name: "بيتزا عش البلبل وسط", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 215, name: "بيتزا عش البلبل صغير", price: 1500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 216, name: "بيتزا زنجر كبير", price: 3200, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 217, name: "بيتزا زنجر وسط", price: 2300, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 218, name: "بيتزا زنجر صغير", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 219, name: "بيتزا الفصول الاربعة كبير", price: 4000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 220, name: "بيتزا الفصول الاربعة وسط", price: 3000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 221, name: "بيتزا الفصول الاربعة صغير", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 222, name: "بيتزا محبين الاجبان كبير", price: 3000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 223, name: "بيتزا محبين الاجبان وسط", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 224, name: "بيتزا محبين الاجبان صغير", price: 1500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 225, name: "بيتزا بالقشطة والعسل والجبن السائل كبير", price: 2800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 226, name: "بيتزا بالقشطة والعسل والجبن السائل وسط", price: 2300, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 227, name: "بيتزا بالقشطة والعسل والجبن السائل صغير", price: 1800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 228, name: "بيتزا بيض مع الجبن كبير", price: 2400, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 229, name: "بيتزا بيض مع الجبن وسط", price: 1800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 230, name: "بيتزا بيض مع الجبن صغير", price: 1400, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 231, name: "مكرونه بشاميل", price: 1000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 232, name: "مكرونه دجاج", price: 800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 233, name: "مكرونة بالخضار", price: 500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 235, name: "مكرونة سبايسي حار", price: 500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 236, name: "مكرونة بالتونة", price: 700, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 237, name: "مكرونة بلحم", price: 800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 238, name: "برجر لحم دبل بلدي", price: 1100, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 239, name: "برجر لحم بلدي", price: 700, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 240, name: "برجر دجاج دبل", price: 900, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 241, name: "برجر دجاج", price: 600, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 242, name: "برجر ماكس طوفان الاقصى", price: 18, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 243, name: "اصابع جبن", price: 1000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 244, name: "كرسبي", price: 1000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 245, name: "زنجر ساندوتش", price: 800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 246, name: "زنجر صحن", price: 1200, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 247, name: "فاهيتا ساندوتش", price: 800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 248, name: "كرنشي", price: 800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 249, name: "جبنه 500", price: 500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 250, name: "جبنه 300", price: 1, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 251, name: "جبنه 200", price: 200, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 252, name: "صحن فاهيتا", price: 1200, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 253, name: "بيتزا بالتونه كبير", price: 1, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 533, name: "بيتزا بالتونه وسط", price: 2500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 534, name: "بيتزا بالتونه صغير", price: 1500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 646, name: "جبنه موزريلا", price: 300, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 647, name: "جبنة موزريلا", price: 200, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 667, name: "برجر مكس طوفان الاقصى", price: 1800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 668, name: "كساديا", price: 1200, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 669, name: "فطاير بل دجاج المشورمه", price: 1500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 670, name: "فطيره بل جبن موزرلا والقشطه", price: 1300, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 671, name: "فطيره بل دجاج", price: 1200, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 672, name: "فطيره جبن شرائح وجبن سائل", price: 1000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 686, name: "فطيره جبن شرئح وجبن سائل", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 687, name: "فطر ه بل دجاج وسط", price: 1500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 688, name: "فطيره بل دجاج صغير", price: 1200, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 691, name: "فطيره قشطه مع العسل وسط", price: 1500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 692, name: "فطيره قشطه مع العسل كبير", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 699, name: "فطيرة بل الحم كبير", price: 2500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 700, name: "فطيرة بل الحم وسط", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 702, name: "فطيره بل دجاج كبير", price: 2000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 703, name: "تشيكن فرايز", price: 1000, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 704, name: "تشيكن فرايز", price: 1500, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 705, name: "نشيكن فرايز", price: 1800, category: "قسم الوجبات السريعة", meal: "صبوح وعشاء" },
-        { id: 31, name: "حبه دجاج شوايه", price: 2200, category: "قسم دجاج الشواية", meal: "غداء" },
-        { id: 32, name: "نص حبه دجاج شوايه", price: 1100, category: "قسم دجاج الشواية", meal: "غداء" },
-        { id: 33, name: "ربع دجاج شوايه", price: 550, category: "قسم دجاج الشواية", meal: "غداء" }
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>بصمات برو - طوفان الأقصى</title>
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="بصمات برو">
+    
+    <style>
+        :root { --bg: #0a0a0a; --gold: #c5a059; --red: #ff3333; --dark-red: #8b0000; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { margin: 0 !important; padding: 0 !important; max-width: 100%; overflow-x: hidden; background: var(--bg) !important; min-height: 100vh; }
+        body { background: var(--bg) !important; font-family: 'Tajawal', sans-serif; color: #ffffff; padding: 0; position: relative; padding-top: 115px; }
+        .fixed-header { position: fixed; top: 0; left: 0; right: 0; background: var(--bg); z-index: 100; padding: 8px 10px 5px 10px; border-bottom: 1px solid #222; }
+        .scroll-content { padding: 8px 10px 85px 10px; }
+        .inp { width:100%; padding:12px; background:#1e1e1e; border:1px solid #333; color:var(--gold); border-radius:8px; margin-bottom:10px; outline:none; font-size:14px; }
+        .tabs { display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap; }
+        .tab { flex:1; padding:10px; background:#1e1e1e; border:none; color:#aaa; border-radius:5px; font-weight:bold; cursor:pointer; text-align:center; transition:0.2s; }
+        .tab:active { transform:scale(0.97); background:#333; }
+        .tab.active { background:var(--dark-red); color:#fff; }
+        .cat-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 5px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+        .cat-bar::-webkit-scrollbar { height: 3px; background: #222; }
+        .cat-bar::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+        .cat-item { padding: 6px 15px; background: #1e1e1e; border: 1px solid #333; border-radius: 20px; font-size: 12px; white-space: nowrap; color: #aaa; cursor: pointer; flex-shrink: 0; transition:0.2s; }
+        .cat-item:active { transform:scale(0.95); background:#333; }
+        .cat-item.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: bold; }
+        .item { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:#141414; border-radius:8px; margin-bottom:6px; border-right:3px solid var(--dark-red); }
+        .item-id { color: var(--gold); font-weight: bold; font-size: 13px; margin-left: 8px; }
+        .item-name { font-size: 13px; flex:1; text-align:right; color: #ffffff; }
+        .item-price { color: var(--gold); margin-left: 10px; font-weight: bold; font-size: 14px; min-width: 50px; text-align: left; }
+        .add-btn { width:34px; height:34px; background:#2a2a2a; color:var(--gold); border:none; border-radius:6px; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; }
+        .add-btn:active { background: var(--dark-red); color: white; transform: scale(0.95); }
+        .cart-wrapper { position: fixed; bottom: 15px; right: 15px; z-index: 1000; display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
+        #cart-btn { width: 55px; height: 55px; background: var(--dark-red); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; border: 2px solid var(--gold); cursor: pointer; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.3); transition:0.2s; }
+        #cart-btn:active { transform: scale(0.95); }
+        .badge { position: absolute; top: -5px; right: -5px; background: #fff; color: #000; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; font-weight: bold; display: flex; justify-content: center; align-items: center; }
+        .floating-total { margin-top: 5px; font-size: 11px; color: var(--red); font-weight: bold; background: rgba(0,0,0,0.85); padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+        #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.96); z-index:10001; justify-content:center; align-items:center; }
+        .modal-body { background:#111; width:92%; max-width: 500px; height: auto; max-height: 85%; border-radius:20px; padding:20px; border:1px solid var(--gold); overflow-y: auto; position: relative; margin: auto; }
+        .cart-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #222; gap: 10px; flex-wrap: wrap; }
+        .cart-row span:first-child { flex: 2; font-size: 13px; word-break: break-word; color: #fff; }
+        .qty-btn { width:32px; height:32px; background:#2a2a2a; color:white; border:none; border-radius:6px; font-size:16px; cursor:pointer; transition:0.2s; }
+        .qty-btn:active { transform: scale(0.9); background: var(--dark-red); }
+        .action-btn { width:100%; padding:12px; border:none; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer; transition:0.2s; }
+        .action-btn:active { transform: scale(0.98); opacity: 0.8; }
+        .internal-btn { background: #D4AF37; color:#000; }
+        .external-btn { background: #25d366; color:#000; }
+        .close-btn { background:#333; color:white; }
+        .clear-btn { background:none; color:var(--red); border:1px solid #333; margin-top:15px; }
+        .order-buttons { display: flex; gap: 10px; margin: 15px 0; }
+        .order-buttons button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .order-buttons button:active { transform: scale(0.98); }
+        #menu { margin-bottom: 10px; }
+        .toast-msg { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #27ae60; color: white; padding: 10px 24px; border-radius: 50px; font-size: 14px; font-weight: bold; z-index: 10000; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .toast-msg.show { opacity: 1; }
+        .copy-btn { background: #333; color: var(--gold); border: 1px solid var(--gold); border-radius: 6px; padding: 8px 16px; font-size: 13px; cursor: pointer; margin-right: 10px; transition: 0.2s; font-weight: bold; }
+        .copy-btn:active { transform: scale(0.95); background: var(--gold); color: #000; }
+        .fav-btn { background: #f39c12; color: #000; margin:0; }
+        .fav-btn:active { background: #e67e22; transform: scale(0.98); }
+        .load-fav-btn { background: #3498db; color: #fff; margin:0; }
+        .load-fav-btn:active { background: #2980b9; transform: scale(0.98); }
+        .voice-search-btn { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); background: transparent; border: none; font-size: 22px; cursor: pointer; color: var(--gold); transition: 0.2s; }
+        .voice-search-btn:active { transform: translateY(-50%) scale(0.9); color: #ffcc66; }
+        .search-container { position: relative; }
+        #splash { position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #0a0a0a, #1a1a1a); z-index:9999; display:flex; justify-content:center; align-items:center; flex-direction: column; gap: 20px; }
+        .splash-logo { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); animation: pulse 1s ease-in-out infinite alternate; box-shadow: 0 0 20px rgba(197, 160, 89, 0.5); }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 20px rgba(197, 160, 89, 0.3); } 100% { transform: scale(1.05); box-shadow: 0 0 40px rgba(197, 160, 89, 0.6); } }
+        .splash-text { text-align: center; animation: fadeInUp 0.8s ease-out; }
+        .splash-restaurant { color: #ffffff !important; font-size: 40px !important; font-weight: bold !important; margin-bottom: 100px; letter-spacing: 1px; max-width: 280px; line-height: 1.3; word-break: break-word; text-align: center; }
+        .slogan-box { border: 2px solid var(--gold); border-radius: 20px; padding: 12px 20px; background: rgba(197, 160, 89, 0.05); box-shadow: 0 0 15px rgba(197, 160, 89, 0.2); }
+        .splash-slogan { color: var(--gold); font-size: 16px; font-weight: bold; letter-spacing: 1px; line-height: 1.5; margin: 0; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* نافذة إدخال رقم الطاولة المخصصة */
+        .custom-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 20000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .dialog-box {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            width: 85%;
+            max-width: 320px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.3);
+        }
+        .dialog-box h3 {
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .dialog-box p {
+            color: #aaa;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .dialog-input {
+            width: 100%;
+            padding: 14px;
+            background: #0a0a0a;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        .dialog-input:focus {
+            border-color: #ffcc66;
+            box-shadow: 0 0 10px rgba(197, 160, 89, 0.5);
+        }
+        .dialog-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .dialog-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+        .dialog-btn.confirm {
+            background: var(--gold);
+            color: #000;
+        }
+        .dialog-btn.cancel {
+            background: #333;
+            color: #fff;
+        }
+        .dialog-btn:active {
+            transform: scale(0.97);
+        }
+        
+        @media (max-width: 480px) { body { padding-top: 105px; } .fixed-header { padding: 6px 8px 3px 8px; } .scroll-content { padding: 6px 8px 80px 8px; } .item { padding: 8px 8px; } .splash-logo { width: 100px; height: 100px; } .splash-restaurant { font-size: 28px !important; max-width: 220px; } .splash-slogan { font-size: 14px; } .toast-msg { font-size: 12px; white-space: nowrap; bottom: 70px; } }
+    </style>
+</head>
+<body>
 
+<div id="splash">
+    <img src="https://i.postimg.cc/fS7ksRQm/shʿar-twfan-llbarkwd.png" alt="شعار مطاعم طوفان الأقصى" class="splash-logo" id="splashLogo">
+    <div class="splash-text">
+        <div class="splash-restaurant">مطاعم وبروست طوفان الأقصى</div>
+        <div style="height: 25px;"></div>
+        <div class="slogan-box">
+            <div class="splash-slogan">بصمات برو..<br>حيث يبدأ الابتكار، وينتهي التقليد</div>
+        </div>
+    </div>
+</div>
 
+<div class="fixed-header">
+    <marquee behavior="scroll" direction="right" scrollamount="5" style="background: #1a1a1a; padding: 8px 0; margin-bottom: 10px; border-radius: 30px; border: 2px solid #c5a059; color: #ffcc66; font-size: 15px; font-weight: bold;">
+        <img src="https://i.postimg.cc/MX070ynx/shʿar-mthrk-llbarkwd.png" style="width: 28px; height: 28px; border-radius: 50%; vertical-align: middle; margin: 0 10px;" alt="شعار المطعم">
+        🍽️ مرحباً بكم في مطاعم وبروست طوفان الأقصى — أهلاً وسهلاً بكم 🤍 — نتمنى لكم تجربة ممتعة 🍽️
+    </marquee>
+    
+    <div class="search-container">
+        <input type="text" class="inp" id="search" placeholder="ابحث بالاسم أو الرقم...">
+        <button class="voice-search-btn" onclick="startVoiceSearch()" title="بحث صوتي">🎤</button>
+    </div>
+    <div class="tabs">
+        <button class="tab active" onclick="setM('الكل', this)">الكل</button>
+        <button class="tab" onclick="setM('صبوح وعشاء', this)">صبوح/عشاء</button>
+        <button class="tab" onclick="setM('غداء', this)">غداء</button>
+    </div>
+    <div class="cat-bar" id="catBar"></div>
+</div>
+
+<div class="scroll-content" id="scrollContent">
+    <div id="menu"></div>
+</div>
+
+<div class="cart-wrapper" onclick="openC()">
+    <div id="cart-btn">🛒<div class="badge" id="b">0</div></div>
+    <div class="floating-total" id="float-t">0 ر.ي</div>
+</div>
+
+<div id="modal">
+    <div class="modal-body">
+        <h3 style="text-align:center; color:var(--gold); margin-top:0;">🛒 سلة طلباتك</h3>
+        
+        <div id="list"></div>
+        <h2 id="total" style="text-align:center; color:var(--gold); margin:15px 0;">0 ر.ي</h2>
+        
+        <div class="order-buttons">
+            <button onclick="showInternalDialog()" class="internal-btn" style="background:#D4AF37; color:#000;">🏠 طلب داخلي</button>
+            <button onclick="sendExternalOrder()" class="external-btn" style="background:#25d366; color:#000;">📍 طلب خارجي</button>
+        </div>
+        
+        <div class="split-box" style="margin: 15px 0; padding: 12px; background: #161616; border: 1px dashed var(--gold); border-radius: 12px; text-align: center;">
+            <label style="color: #aaa; font-size: 12px; display: block; margin-bottom: 8px;">👥 تقسيم الفاتورة (للمجموعات)</label>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+                <span style="color: #fff; font-size: 13px;">عدد الأشخاص:</span>
+                <input type="number" id="num-people" value="1" min="1" oninput="calculateSplit()" style="width: 65px; padding: 6px; background: #0a0a0a; border: 1px solid var(--gold); color: var(--gold); border-radius: 6px; text-align: center; font-weight: bold; outline: none;">
+            </div>
+            <div id="split-result" style="margin-top: 10px; color: #ff3333; font-weight: bold; font-size: 14px; display: none; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 6px;">
+                نصيب كل شخص: <span id="per-person-price" style="color: #fff;">0</span> ر.ي
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center;">
+            <button onclick="copyCartToClipboard()" class="copy-btn">📋 نسخ الفاتورة</button>
+            <button onclick="saveFavoriteMeal()" class="action-btn fav-btn" style="flex:1;">❤️ حفظ كوجبة مفضلة</button>
+            <button onclick="loadFavoriteMeal()" class="action-btn load-fav-btn" style="flex:1;">⭐ استدعاء المفضلة</button>
+        </div>
+        
+        <button onclick="forceClearCart()" class="action-btn clear-btn">🗑️ إفراغ السلة</button>
+        <button onclick="closeC()" class="action-btn close-btn">❌ إغلاق والعودة للقائمة</button>
+    </div>
+</div>
+
+<div id="toastMsg" class="toast-msg">✅ تمت الإضافة</div>
+
+<script>
+    // =============================================
+    // ⭐⭐⭐ ضع مصفوفة الأصناف (menuItems) هنا ⭐⭐⭐
+    // =============================================
+    const menuItems = [
+        // ألصق مصفوفة الأصناف الخاصة بك هنا
     ];
 
     // =============================================
-    // إعدادات النظام - قم بتعديل الأرقام حسب رغبتك
+    // إعدادات النظام
     // =============================================
-    const CASHIER_PHONE = "967778213277";   // رقم واتساب الكاشير (الطلبات الداخلية)
-    const DELIVERY_PHONE = "967778213277";  // رقم واتساب التوصيل (الطلبات الخارجية)
+    const CASHIER_PHONE = "967778213277";   // رقم واتساب الكاشير
+    const DELIVERY_PHONE = "967778213277";  // رقم واتساب التوصيل
     
     let cart = {};
     let currentMeal = 'الكل';
     let currentCat = 'الكل';
 
     // =============================================
-    // دوال إرسال الطلبات
+    // نافذة إدخال رقم الطاولة المخصصة (بديل عن prompt)
     // =============================================
-    
-    // الطلب الداخلي
-    function sendInternalOrder() {
+    function showInternalDialog() {
         if (Object.keys(cart).length === 0) {
             showToast('⚠️ السلة فارغة، أضف أصنافاً أولاً');
             return;
         }
         
-        let roomNumber = prompt("🏠 يرجى إدخال رقم الغرفة أو الطاولة:\n(مثال: غرفة 3  أو  كاولة 5)");
+        // إنشاء النافذة المخصصة
+        const dialog = document.createElement('div');
+        dialog.className = 'custom-dialog';
+        dialog.innerHTML = `
+            <div class="dialog-box">
+                <h3>🏠 طلب داخلي</h3>
+                <p>يرجى إدخال رقم الطاولة أو الغرفة</p>
+                <input type="text" class="dialog-input" id="roomInput" placeholder="مثال: طاولة 3  أو  غرفة 5" autocomplete="off">
+                <div class="dialog-buttons">
+                    <button class="dialog-btn cancel" id="cancelDialog">إلغاء</button>
+                    <button class="dialog-btn confirm" id="confirmDialog">تأكيد</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(dialog);
         
-        if (!roomNumber) {
+        const input = dialog.querySelector('#roomInput');
+        input.focus();
+        
+        dialog.querySelector('#confirmDialog').onclick = () => {
+            let roomNumber = input.value.trim();
+            if (roomNumber === "") {
+                showToast('⚠️ الرجاء إدخال رقم الطاولة أو الغرفة');
+                input.focus();
+                return;
+            }
+            dialog.remove();
+            sendInternalOrder(roomNumber);
+        };
+        
+        dialog.querySelector('#cancelDialog').onclick = () => {
+            dialog.remove();
             showToast('❌ تم إلغاء الطلب');
-            return;
-        }
+        };
         
-        roomNumber = roomNumber.trim();
-        if (roomNumber === "") {
-            showToast('❌ رقم الغرفة أو الطاولة مطلوب');
-            return;
-        }
-        
+        // إغلاق بالضغط على Enter
+        input.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                dialog.querySelector('#confirmDialog').click();
+            }
+        };
+    }
+    
+    // الطلب الداخلي
+    function sendInternalOrder(roomNumber) {
         const now = new Date();
         const formattedDate = now.toLocaleDateString('ar-EG');
         const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
@@ -857,24 +569,45 @@
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += `💰 *الإجمالي: ${total} ريال*\n`;
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
-        msg += `👨‍🍳 *تنبيه للمباشر:* يرجى التوجه إلى ${roomNumber} لاستلام المبلغ (${total} ريال) وتجهيز الطلب.\n`;
-        msg += "✅ سيتم إيصال الطلب فور تجهيزه.";
+        msg += `👨‍🍳 توجه إلى ${roomNumber} - استلم المبلغ (${total} ريال) - جهز الطلب\n`;
         
         window.open(`https://wa.me/${CASHIER_PHONE}?text=${encodeURIComponent(msg)}`);
-        showToast('✅ تم إرسال الطلب الداخلي بنجاح');
+        showToast('✅ تم إرسال الطلب الداخلي');
     }
     
-    // الطلب الخارجي - مع الموقع الجغرافي
+    // الطلب الخارجي
     function sendExternalOrder() {
         if (Object.keys(cart).length === 0) {
             showToast('⚠️ السلة فارغة، أضف أصنافاً أولاً');
             return;
         }
         
-        let sendLocation = confirm("📍 هل توافق على إرسال موقعك الجغرافي الحالي؟\n\n" +
-                                   "✅ نعم: سيرى مندوب التوصيل موقعك بالضبط على الخريطة\n" +
-                                   "❌ لا: سيطلب منك إدخال عنوان نصي بديل");
+        const dialog = document.createElement('div');
+        dialog.className = 'custom-dialog';
+        dialog.innerHTML = `
+            <div class="dialog-box">
+                <h3>📍 طلب خارجي</h3>
+                <p>هل توافق على إرسال موقعك الجغرافي؟</p>
+                <div class="dialog-buttons">
+                    <button class="dialog-btn cancel" id="noLocation">إلغاء</button>
+                    <button class="dialog-btn confirm" id="sendLocation">نعم، أرسل الموقع</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(dialog);
         
+        dialog.querySelector('#sendLocation').onclick = () => {
+            dialog.remove();
+            sendOrderWithLocation();
+        };
+        
+        dialog.querySelector('#noLocation').onclick = () => {
+            dialog.remove();
+            sendOrderWithoutLocation();
+        };
+    }
+    
+    function sendOrderWithLocation() {
         const now = new Date();
         const formattedDate = now.toLocaleDateString('ar-EG');
         const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
@@ -883,91 +616,80 @@
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += `📅 التاريخ: ${formattedDate}\n`;
         msg += `🕐 الوقت: ${formattedTime}\n`;
+        msg += "🗺️ *سيتم إرسال الموقع الجغرافي بشكل منفصل*\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "*📋 تفاصيل الطلب:*\n\n";
         
-        if (sendLocation) {
-            msg += "🗺️ *سيتم إرسال الموقع الجغرافي بشكل منفصل* 🗺️\n";
-            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-            msg += "*📋 تفاصيل الطلب:*\n\n";
-            
-            let total = 0;
-            for(let id in cart) {
-                const item = menuItems.find(x => x.id == id);
-                if(item) {
-                    const itemTotal = item.price * cart[id];
-                    total += itemTotal;
-                    msg += `• ${item.name}\n`;
-                    msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
-                }
+        let total = 0;
+        for(let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if(item) {
+                const itemTotal = item.price * cart[id];
+                total += itemTotal;
+                msg += `• ${item.name}\n`;
+                msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
             }
-            
-            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-            msg += `💰 *الإجمالي: ${total} ريال*\n`;
-            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
-            msg += "📞 سيتم التواصل معكم لتأكيد الطلب.";
-            
-            const deliveryUrl = `https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`;
-            window.open(deliveryUrl);
-            
-            if (navigator.geolocation) {
-                showToast('📍 جاري تحديد موقعك...');
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        const locationMsg = `📍 *موقع الزبون (طلب جديد)*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🗺️ رابط الخريطة:\nhttps://maps.google.com/?q=${lat},${lng}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nهذا هو موقع الزبون الحالي، يرجى استخدامه للتوصيل.`;
-                        window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(locationMsg)}`);
-                        showToast('✅ تم إرسال الطلب والموقع بنجاح');
-                    },
-                    (error) => {
-                        console.error("خطأ في تحديد الموقع:", error);
-                        let errorMsg = "⚠️ لم نتمكن من تحديد موقعك تلقائياً.\n";
-                        if (error.code === 1) errorMsg += "يرجى تمكين خدمة الموقع من إعدادات المتصفح ثم إعادة المحاولة.";
-                        else if (error.code === 2) errorMsg += "تعذر الحصول على الموقع، يرجى التحقق من اتصال الإنترنت.";
-                        else errorMsg += "يرجى إرسال موقعك يدوياً عبر واتساب.";
-                        showToast(errorMsg);
-                    }
-                );
-            } else {
-                showToast('⚠️ متصفحك لا يدعم مشاركة الموقع، يرجى إرسال الموقع يدوياً');
-            }
-        } 
-        else {
-            let address = prompt("🚚 يرجى إدخال عنوان التوصيل (الشارع، الحي، المعلم البارز):");
-            
-            if (!address) {
-                showToast('❌ تم إلغاء الطلب');
-                return;
-            }
-            
-            address = address.trim();
-            if (address === "") {
-                showToast('❌ عنوان التوصيل مطلوب');
-                return;
-            }
-            
-            msg += `📍 العنوان: ${address}\n`;
-            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-            msg += "*📋 تفاصيل الطلب:*\n\n";
-            
-            let total = 0;
-            for(let id in cart) {
-                const item = menuItems.find(x => x.id == id);
-                if(item) {
-                    const itemTotal = item.price * cart[id];
-                    total += itemTotal;
-                    msg += `• ${item.name}\n`;
-                    msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
-                }
-            }
-            
-            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-            msg += `💰 *الإجمالي: ${total} ريال*\n`;
-            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
-            msg += "📞 سيتم التواصل معكم لتأكيد الطلب.";
-            
-            window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`);
-            showToast('✅ تم إرسال الطلب الخارجي (بدون موقع)');
         }
+        
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `💰 *الإجمالي: ${total} ريال*\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        
+        const deliveryUrl = `https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`;
+        window.open(deliveryUrl);
+        
+        if (navigator.geolocation) {
+            showToast('📍 جاري تحديد موقعك...');
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const locationMsg = `📍 *موقع الزبون*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🗺️ الرابط:\nhttps://maps.google.com/?q=${lat},${lng}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+                    window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(locationMsg)}`);
+                    showToast('✅ تم إرسال الطلب والموقع');
+                },
+                (error) => {
+                    let errorMsg = "⚠️ لم نتمكن من تحديد موقعك";
+                    if (error.code === 1) errorMsg = "⚠️ يرجى تمكين خدمة الموقع من الإعدادات";
+                    showToast(errorMsg);
+                }
+            );
+        } else {
+            showToast('⚠️ متصفحك لا يدعم مشاركة الموقع');
+        }
+    }
+    
+    function sendOrderWithoutLocation() {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('ar-EG');
+        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        
+        let msg = "🚚 *طلب خارجي (توصيل) - مطاعم طوفان الأقصى* 🚚\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `📅 التاريخ: ${formattedDate}\n`;
+        msg += `🕐 الوقت: ${formattedTime}\n`;
+        msg += "⚠️ *لم يتم إرسال الموقع الجغرافي*\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "*📋 تفاصيل الطلب:*\n\n";
+        
+        let total = 0;
+        for(let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if(item) {
+                const itemTotal = item.price * cart[id];
+                total += itemTotal;
+                msg += `• ${item.name}\n`;
+                msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
+            }
+        }
+        
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `💰 *الإجمالي: ${total} ريال*\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "📞 سيتم التواصل مع الزبون لتحديد العنوان";
+        
+        window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`);
+        showToast('✅ تم إرسال الطلب (بدون موقع)');
     }
 
     // =============================================
@@ -976,130 +698,63 @@
     
     function showToast(message) {
         const toast = document.getElementById('toastMsg');
-        toast.textContent = message || '✅ تم إضافة الصنف للسلة';
+        toast.textContent = message;
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 1500);
+        setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
     function startVoiceSearch() {
         if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            showToast('❌ المتصفح الحالي لا يدعم البحث الصوتي');
+            showToast('❌ المتصفح لا يدعم البحث الصوتي');
             return;
         }
         
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        
         recognition.lang = 'ar-SA';
         recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
 
-        recognition.onstart = () => {
-            showToast('🎤 استمع الآن... تحدث بوضوح');
-        };
-
+        recognition.onstart = () => showToast('🎤 تحدث الآن...');
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
-            const cleanTranscript = transcript.trim().replace(/\.$/, '');
-            document.getElementById('search').value = cleanTranscript;
-            render(cleanTranscript);
-            showToast('🔍 تم البحث عن: ' + cleanTranscript);
+            document.getElementById('search').value = transcript;
+            render(transcript);
+            showToast('🔍 تم البحث عن: ' + transcript);
         };
-
-        recognition.onerror = (event) => {
-            console.error('Voice Search Error:', event.error);
-            
-            if (event.error === 'not-allowed') {
-                showToast('❌ تم حظر الميكروفون! افتحه من إعدادات المتصفح');
-            } else if (event.error === 'network') {
-                showToast('❌ خطأ في الشبكة! يحتاج إنترنت مستقر');
-            } else if (event.error === 'no-speech') {
-                showToast('❌ لم يتم سماع أي صوت، حاول التحدث مجدداً');
-            } else {
-                showToast('❌ خطأ تقني: ' + event.error);
-            }
-        };
-
-        try {
-            recognition.start();
-        } catch (e) {
-            console.error(e);
-            showToast('❌ فشل تشغيل محرك الصوت');
-        }
+        recognition.onerror = () => showToast('❌ لم يتم التعرف على الصوت');
+        recognition.start();
     }
 
     function saveFavoriteMeal() {
-        if (Object.keys(cart).length === 0) { 
-            showToast('⚠️ السلة فارغة'); 
-            return; 
-        }
-        
-        let text = '🍽️ الوجبة المفضلة:\n─────────────────\n';
-        for(let id in cart) {
-            const i = menuItems.find(x => x.id == id);
-            if(i) text += `${i.name} x${cart[id]}\n`;
-        }
-        
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        
+        if (Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
         localStorage.setItem('favoriteMeal', JSON.stringify(cart));
-        showToast('❤️ تم حفظ الوجبة كوجبة مفضلة ونسخها');
+        showToast('❤️ تم حفظ الوجبة المفضلة');
     }
 
     function loadFavoriteMeal() {
         let saved = localStorage.getItem('favoriteMeal');
-        
-        if (!saved) {
-            showToast('⭐ لا توجد وجبة مفضلة محفوظة');
-            return;
-        }
-        
+        if (!saved) { showToast('⭐ لا توجد وجبة مفضلة'); return; }
         try {
-            let savedCart = JSON.parse(saved);
-            if (Object.keys(savedCart).length === 0) {
-                showToast('⭐ الوجبة المحفوظة فارغة');
-                return;
-            }
-            
-            cart = savedCart;
+            cart = JSON.parse(saved);
             updateUI();
             showToast('⭐ تم استدعاء الوجبة المفضلة');
-            
-        } catch(e) {
-            console.error('خطأ في استدعاء الوجبة:', e);
-            showToast('❌ حدث خطأ في استدعاء الوجبة المفضلة');
-        }
+        } catch(e) { showToast('❌ خطأ في الاستدعاء'); }
     }
 
     function copyCartToClipboard() {
         if (Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
-        let text = '🍽️ سلة الطلبات 🍽️\n─────────────────\n';
+        let text = '🍽️ سلة الطلبات\n─────────────────\n';
         let total = 0;
         for(let id in cart) {
             const i = menuItems.find(x => x.id == id);
             if(i) {
-                const itemTotal = i.price * cart[id];
-                total += itemTotal;
-                text += `${i.name} x${cart[id]} = ${itemTotal} ر.ي\n`;
+                total += i.price * cart[id];
+                text += `${i.name} x${cart[id]} = ${i.price * cart[id]} ر.ي\n`;
             }
         }
         text += `─────────────────\n💰 الإجمالي: ${total} ر.ي\n`;
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-            document.execCommand('copy');
-            showToast('📋 تم نسخ الفاتورة');
-        } catch(e) { showToast('❌ فشل النسخ'); }
-        document.body.removeChild(textarea);
+        navigator.clipboard.writeText(text);
+        showToast('📋 تم نسخ الفاتورة');
     }
 
     function calculateSplit() {
@@ -1114,12 +769,17 @@
         } else { resultDiv.style.display = 'none'; }
     }
 
-    setTimeout(() => { const splash = document.getElementById('splash'); if(splash) splash.style.display = 'none'; init(); }, 3000);
+    setTimeout(() => { 
+        const splash = document.getElementById('splash'); 
+        if(splash) splash.style.display = 'none'; 
+        init(); 
+    }, 3000);
 
     function init() { renderCats(); render(); }
     
     function renderCats() {
         const bar = document.getElementById('catBar');
+        if (!menuItems.length) { bar.innerHTML = '<div class="cat-item">لا توجد أصناف</div>'; return; }
         const fItems = currentMeal === 'الكل' ? menuItems : menuItems.filter(i => i.meal === currentMeal || i.meal === 'الكل');
         const uniqueCats = ['الكل', ...new Set(fItems.map(i => i.category))];
         bar.innerHTML = uniqueCats.map(c => `<div class="cat-item ${c === currentCat ? 'active' : ''}" onclick="filterCat('${c.replace(/'/g, "\\'")}')">${c}</div>`).join('');
@@ -1129,6 +789,7 @@
     
     function render(q='') {
         const area = document.getElementById('menu');
+        if (!menuItems.length) { area.innerHTML = '<div style="text-align:center; padding:50px; color:#aaa;">📋 أضف الأصناف أولاً</div>'; return; }
         const searchTerm = q.toLowerCase();
         const f = menuItems.filter(i => {
             const mMatch = (currentMeal === 'الكل' || i.meal === currentMeal || i.meal === 'الكل');
@@ -1161,22 +822,22 @@
             const i = menuItems.find(x => x.id == id);
             if(i) {
                 t += i.price * cart[id];
-                h += `<div class="cart-row"><span><span style="color:var(--gold);">${id}</span> ${i.name}</span><div style="display:flex; align-items:center; gap:6px;"><button class="qty-btn" onclick="add(${id},-1)">-</button><span style="min-width:25px; text-align:center;">${cart[id]}</span><button class="qty-btn" onclick="add(${id},1)">+</button></div></div>`;
+                h += `<div class="cart-row"><span><span style="color:var(--gold);">${i.id}</span> ${i.name}</span><div style="display:flex; align-items:center; gap:6px;"><button class="qty-btn" onclick="add(${id},-1)">-</button><span style="min-width:25px; text-align:center;">${cart[id]}</span><button class="qty-btn" onclick="add(${id},1)">+</button></div></div>`;
             }
         }
-        list.innerHTML = h || '<p style="text-align:center; padding:20px; color:#fff;">السلة فارغة</p>';
+        list.innerHTML = h || '<p style="text-align:center; padding:20px; color:#fff;">🛒 السلة فارغة</p>';
         document.getElementById('total').innerText = t + " ر.ي";
         calculateSplit();
     }
     
     function forceClearCart() {
         if(Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
-        let modalConfirm = document.createElement('div');
-        modalConfirm.style.cssText = `position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:20000; display:flex; justify-content:center; align-items:center; font-family:sans-serif;`;
-        modalConfirm.innerHTML = `<div style="background: #1a1a1a; padding: 25px; border-radius: 16px; text-align: center; max-width: 280px; border: 1px solid #c5a059;"><h3 style="color: #c5a059; margin-bottom: 15px;">⚠️ تأكيد الإفراغ</h3><p style="color: white; margin-bottom: 20px;">هل أنت متأكد من إفراغ السلة؟</p><div style="display: flex; gap: 10px;"><button id="confirmYes" style="flex:1; padding: 10px; background: #8b0000; color: white; border: none; border-radius: 8px; cursor: pointer;">نعم، إفراغ</button><button id="confirmNo" style="flex:1; padding: 10px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer;">إلغاء</button></div></div>`;
-        document.body.appendChild(modalConfirm);
-        document.getElementById('confirmYes').onclick = () => { cart = {}; updateUI(); closeC(); showToast('✅ تم إفراغ السلة'); modalConfirm.remove(); };
-        document.getElementById('confirmNo').onclick = () => modalConfirm.remove();
+        if(confirm('⚠️ هل أنت متأكد من إفراغ السلة؟')) {
+            cart = {};
+            updateUI();
+            closeC();
+            showToast('✅ تم إفراغ السلة');
+        }
     }
     
     function setM(t, btn) { currentMeal = t; currentCat = 'الكل'; document.querySelectorAll('.tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderCats(); render(); }
@@ -1193,8 +854,395 @@
 <div style="text-align:center; padding:20px; margin-top:20px; border-top:1px solid #333; background:#0a0a0a;">
     <hr style="border:0; border-top:2px solid #c5a059; margin-bottom:10px; width:40%; margin-left:auto; margin-right:auto; opacity:0.5;">
     <p style="color:#ffffff; font-size:14px; margin:0; font-weight:bold;">
-        تصميم وتنفيذ المهندس: 
-        <span style="color:#ffffff;">محمد الصالحي</span>
+        تصميم وتنفيذ المهندس: محمد الصالحي
+    </p>
+    <p style="margin-top:8px;">
+        <a href="https://wa.me/967778213277" style="color:#c5a059; text-decoration:none; font-size:14px; font-weight:bold;">
+            بصمات برو - 778213277
+        </a>
+    </p>
+</div>
+
+</body>
+</html>
+    ];
+
+    // =============================================
+    // إعدادات النظام
+    // =============================================
+    const CASHIER_PHONE = "967778213277";   // رقم واتساب الكاشير
+    const DELIVERY_PHONE = "967778213277";  // رقم واتساب التوصيل
+    
+    let cart = {};
+    let currentMeal = 'الكل';
+    let currentCat = 'الكل';
+
+    // =============================================
+    // نافذة إدخال رقم الطاولة المخصصة (بديل عن prompt)
+    // =============================================
+    function showInternalDialog() {
+        if (Object.keys(cart).length === 0) {
+            showToast('⚠️ السلة فارغة، أضف أصنافاً أولاً');
+            return;
+        }
+        
+        // إنشاء النافذة المخصصة
+        const dialog = document.createElement('div');
+        dialog.className = 'custom-dialog';
+        dialog.innerHTML = `
+            <div class="dialog-box">
+                <h3>🏠 طلب داخلي</h3>
+                <p>يرجى إدخال رقم الطاولة أو الغرفة</p>
+                <input type="text" class="dialog-input" id="roomInput" placeholder="مثال: طاولة 3  أو  غرفة 5" autocomplete="off">
+                <div class="dialog-buttons">
+                    <button class="dialog-btn cancel" id="cancelDialog">إلغاء</button>
+                    <button class="dialog-btn confirm" id="confirmDialog">تأكيد</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(dialog);
+        
+        const input = dialog.querySelector('#roomInput');
+        input.focus();
+        
+        dialog.querySelector('#confirmDialog').onclick = () => {
+            let roomNumber = input.value.trim();
+            if (roomNumber === "") {
+                showToast('⚠️ الرجاء إدخال رقم الطاولة أو الغرفة');
+                input.focus();
+                return;
+            }
+            dialog.remove();
+            sendInternalOrder(roomNumber);
+        };
+        
+        dialog.querySelector('#cancelDialog').onclick = () => {
+            dialog.remove();
+            showToast('❌ تم إلغاء الطلب');
+        };
+        
+        // إغلاق بالضغط على Enter
+        input.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                dialog.querySelector('#confirmDialog').click();
+            }
+        };
+    }
+    
+    // الطلب الداخلي
+    function sendInternalOrder(roomNumber) {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('ar-EG');
+        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        
+        let msg = "🏨 *طلب داخلي جديد - مطاعم طوفان الأقصى* 🏨\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `📅 التاريخ: ${formattedDate}\n`;
+        msg += `🕐 الوقت: ${formattedTime}\n`;
+        msg += `📍 المكان: ${roomNumber}\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "*📋 تفاصيل الطلب:*\n\n";
+        
+        let total = 0;
+        for(let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if(item) {
+                const itemTotal = item.price * cart[id];
+                total += itemTotal;
+                msg += `• ${item.name}\n`;
+                msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
+            }
+        }
+        
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `💰 *الإجمالي: ${total} ريال*\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+        msg += `👨‍🍳 توجه إلى ${roomNumber} - استلم المبلغ (${total} ريال) - جهز الطلب\n`;
+        
+        window.open(`https://wa.me/${CASHIER_PHONE}?text=${encodeURIComponent(msg)}`);
+        showToast('✅ تم إرسال الطلب الداخلي');
+    }
+    
+    // الطلب الخارجي
+    function sendExternalOrder() {
+        if (Object.keys(cart).length === 0) {
+            showToast('⚠️ السلة فارغة، أضف أصنافاً أولاً');
+            return;
+        }
+        
+        const dialog = document.createElement('div');
+        dialog.className = 'custom-dialog';
+        dialog.innerHTML = `
+            <div class="dialog-box">
+                <h3>📍 طلب خارجي</h3>
+                <p>هل توافق على إرسال موقعك الجغرافي؟</p>
+                <div class="dialog-buttons">
+                    <button class="dialog-btn cancel" id="noLocation">إلغاء</button>
+                    <button class="dialog-btn confirm" id="sendLocation">نعم، أرسل الموقع</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(dialog);
+        
+        dialog.querySelector('#sendLocation').onclick = () => {
+            dialog.remove();
+            sendOrderWithLocation();
+        };
+        
+        dialog.querySelector('#noLocation').onclick = () => {
+            dialog.remove();
+            sendOrderWithoutLocation();
+        };
+    }
+    
+    function sendOrderWithLocation() {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('ar-EG');
+        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        
+        let msg = "🚚 *طلب خارجي (توصيل) - مطاعم طوفان الأقصى* 🚚\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `📅 التاريخ: ${formattedDate}\n`;
+        msg += `🕐 الوقت: ${formattedTime}\n`;
+        msg += "🗺️ *سيتم إرسال الموقع الجغرافي بشكل منفصل*\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "*📋 تفاصيل الطلب:*\n\n";
+        
+        let total = 0;
+        for(let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if(item) {
+                const itemTotal = item.price * cart[id];
+                total += itemTotal;
+                msg += `• ${item.name}\n`;
+                msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
+            }
+        }
+        
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `💰 *الإجمالي: ${total} ريال*\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        
+        const deliveryUrl = `https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`;
+        window.open(deliveryUrl);
+        
+        if (navigator.geolocation) {
+            showToast('📍 جاري تحديد موقعك...');
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const locationMsg = `📍 *موقع الزبون*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🗺️ الرابط:\nhttps://maps.google.com/?q=${lat},${lng}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+                    window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(locationMsg)}`);
+                    showToast('✅ تم إرسال الطلب والموقع');
+                },
+                (error) => {
+                    let errorMsg = "⚠️ لم نتمكن من تحديد موقعك";
+                    if (error.code === 1) errorMsg = "⚠️ يرجى تمكين خدمة الموقع من الإعدادات";
+                    showToast(errorMsg);
+                }
+            );
+        } else {
+            showToast('⚠️ متصفحك لا يدعم مشاركة الموقع');
+        }
+    }
+    
+    function sendOrderWithoutLocation() {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('ar-EG');
+        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        
+        let msg = "🚚 *طلب خارجي (توصيل) - مطاعم طوفان الأقصى* 🚚\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `📅 التاريخ: ${formattedDate}\n`;
+        msg += `🕐 الوقت: ${formattedTime}\n`;
+        msg += "⚠️ *لم يتم إرسال الموقع الجغرافي*\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "*📋 تفاصيل الطلب:*\n\n";
+        
+        let total = 0;
+        for(let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if(item) {
+                const itemTotal = item.price * cart[id];
+                total += itemTotal;
+                msg += `• ${item.name}\n`;
+                msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
+            }
+        }
+        
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `💰 *الإجمالي: ${total} ريال*\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "📞 سيتم التواصل مع الزبون لتحديد العنوان";
+        
+        window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`);
+        showToast('✅ تم إرسال الطلب (بدون موقع)');
+    }
+
+    // =============================================
+    // باقي دوال النظام
+    // =============================================
+    
+    function showToast(message) {
+        const toast = document.getElementById('toastMsg');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function startVoiceSearch() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            showToast('❌ المتصفح لا يدعم البحث الصوتي');
+            return;
+        }
+        
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'ar-SA';
+        recognition.interimResults = false;
+
+        recognition.onstart = () => showToast('🎤 تحدث الآن...');
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('search').value = transcript;
+            render(transcript);
+            showToast('🔍 تم البحث عن: ' + transcript);
+        };
+        recognition.onerror = () => showToast('❌ لم يتم التعرف على الصوت');
+        recognition.start();
+    }
+
+    function saveFavoriteMeal() {
+        if (Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
+        localStorage.setItem('favoriteMeal', JSON.stringify(cart));
+        showToast('❤️ تم حفظ الوجبة المفضلة');
+    }
+
+    function loadFavoriteMeal() {
+        let saved = localStorage.getItem('favoriteMeal');
+        if (!saved) { showToast('⭐ لا توجد وجبة مفضلة'); return; }
+        try {
+            cart = JSON.parse(saved);
+            updateUI();
+            showToast('⭐ تم استدعاء الوجبة المفضلة');
+        } catch(e) { showToast('❌ خطأ في الاستدعاء'); }
+    }
+
+    function copyCartToClipboard() {
+        if (Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
+        let text = '🍽️ سلة الطلبات\n─────────────────\n';
+        let total = 0;
+        for(let id in cart) {
+            const i = menuItems.find(x => x.id == id);
+            if(i) {
+                total += i.price * cart[id];
+                text += `${i.name} x${cart[id]} = ${i.price * cart[id]} ر.ي\n`;
+            }
+        }
+        text += `─────────────────\n💰 الإجمالي: ${total} ر.ي\n`;
+        navigator.clipboard.writeText(text);
+        showToast('📋 تم نسخ الفاتورة');
+    }
+
+    function calculateSplit() {
+        const totalText = document.getElementById('total').innerText;
+        const totalAmount = parseInt(totalText.replace(/[^0-9]/g, '')) || 0;
+        const numPeople = parseInt(document.getElementById('num-people').value) || 1;
+        const resultDiv = document.getElementById('split-result');
+        const perPersonSpan = document.getElementById('per-person-price');
+        if (numPeople > 1 && totalAmount > 0) {
+            perPersonSpan.innerText = Math.round(totalAmount / numPeople);
+            resultDiv.style.display = 'block';
+        } else { resultDiv.style.display = 'none'; }
+    }
+
+    setTimeout(() => { 
+        const splash = document.getElementById('splash'); 
+        if(splash) splash.style.display = 'none'; 
+        init(); 
+    }, 3000);
+
+    function init() { renderCats(); render(); }
+    
+    function renderCats() {
+        const bar = document.getElementById('catBar');
+        if (!menuItems.length) { bar.innerHTML = '<div class="cat-item">لا توجد أصناف</div>'; return; }
+        const fItems = currentMeal === 'الكل' ? menuItems : menuItems.filter(i => i.meal === currentMeal || i.meal === 'الكل');
+        const uniqueCats = ['الكل', ...new Set(fItems.map(i => i.category))];
+        bar.innerHTML = uniqueCats.map(c => `<div class="cat-item ${c === currentCat ? 'active' : ''}" onclick="filterCat('${c.replace(/'/g, "\\'")}')">${c}</div>`).join('');
+    }
+    
+    function filterCat(cat) { currentCat = cat; renderCats(); render(); }
+    
+    function render(q='') {
+        const area = document.getElementById('menu');
+        if (!menuItems.length) { area.innerHTML = '<div style="text-align:center; padding:50px; color:#aaa;">📋 أضف الأصناف أولاً</div>'; return; }
+        const searchTerm = q.toLowerCase();
+        const f = menuItems.filter(i => {
+            const mMatch = (currentMeal === 'الكل' || i.meal === currentMeal || i.meal === 'الكل');
+            const cMatch = (currentCat === 'الكل' || i.category === currentCat);
+            const sMatch = i.name.toLowerCase().includes(searchTerm) || i.id.toString().includes(searchTerm);
+            return mMatch && cMatch && sMatch;
+        });
+        area.innerHTML = f.map(i => `<div class="item"><div style="display:flex; align-items:center; flex-wrap:wrap; flex:1;"><span class="item-id">${i.id}</span><span class="item-name">${i.name}</span></div><div style="display:flex; align-items:center; gap:8px;"><span class="item-price">${i.price}</span><button class="add-btn" onclick="add(${i.id}, 1)">+</button></div></div>`).join('');
+    }
+    
+    function add(id, change) { cart[id] = (cart[id] || 0) + change; if(cart[id] <= 0) delete cart[id]; updateUI(); showToast(); }
+    
+    function updateUI() {
+        const count = Object.values(cart).reduce((a,b)=>a+b,0);
+        document.getElementById('b').innerText = count;
+        let t = 0;
+        for(let id in cart) { const i = menuItems.find(x => x.id == id); if(i) t += i.price * cart[id]; }
+        document.getElementById('float-t').innerText = t + " ر.ي";
+        if(document.getElementById('modal').style.display === 'flex') renderC();
+        calculateSplit();
+    }
+    
+    function openC() { document.getElementById('modal').style.display='flex'; renderC(); }
+    function closeC() { document.getElementById('modal').style.display='none'; }
+    
+    function renderC() {
+        const list = document.getElementById('list');
+        let t = 0; let h = '';
+        for(let id in cart) {
+            const i = menuItems.find(x => x.id == id);
+            if(i) {
+                t += i.price * cart[id];
+                h += `<div class="cart-row"><span><span style="color:var(--gold);">${i.id}</span> ${i.name}</span><div style="display:flex; align-items:center; gap:6px;"><button class="qty-btn" onclick="add(${id},-1)">-</button><span style="min-width:25px; text-align:center;">${cart[id]}</span><button class="qty-btn" onclick="add(${id},1)">+</button></div></div>`;
+            }
+        }
+        list.innerHTML = h || '<p style="text-align:center; padding:20px; color:#fff;">🛒 السلة فارغة</p>';
+        document.getElementById('total').innerText = t + " ر.ي";
+        calculateSplit();
+    }
+    
+    function forceClearCart() {
+        if(Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
+        if(confirm('⚠️ هل أنت متأكد من إفراغ السلة؟')) {
+            cart = {};
+            updateUI();
+            closeC();
+            showToast('✅ تم إفراغ السلة');
+        }
+    }
+    
+    function setM(t, btn) { currentMeal = t; currentCat = 'الكل'; document.querySelectorAll('.tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderCats(); render(); }
+    
+    document.getElementById('search').addEventListener('input', (e)=>render(e.target.value));
+</script>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+    }
+</script>
+
+<div style="text-align:center; padding:20px; margin-top:20px; border-top:1px solid #333; background:#0a0a0a;">
+    <hr style="border:0; border-top:2px solid #c5a059; margin-bottom:10px; width:40%; margin-left:auto; margin-right:auto; opacity:0.5;">
+    <p style="color:#ffffff; font-size:14px; margin:0; font-weight:bold;">
+        تصميم وتنفيذ المهندس: محمد الصالحي
     </p>
     <p style="margin-top:8px;">
         <a href="https://wa.me/967778213277" style="color:#c5a059; text-decoration:none; font-size:14px; font-weight:bold;">
