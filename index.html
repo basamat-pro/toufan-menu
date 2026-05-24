@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>بصمات برو - طوفان الأقصى</title>
     
-    <!-- ملفات PWA للتثبيت على الشاشة -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#D4AF37">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -49,9 +48,13 @@
         .qty-btn:active { transform: scale(0.9); background: var(--dark-red); }
         .action-btn { width:100%; padding:12px; border:none; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer; transition:0.2s; }
         .action-btn:active { transform: scale(0.98); opacity: 0.8; }
-        .wa-btn { background:#25d366; color:#000; }
+        .internal-btn { background: #D4AF37; color:#000; }
+        .external-btn { background: #25d366; color:#000; }
         .close-btn { background:#333; color:white; }
         .clear-btn { background:none; color:var(--red); border:1px solid #333; margin-top:15px; }
+        .order-buttons { display: flex; gap: 10px; margin: 15px 0; }
+        .order-buttons button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .order-buttons button:active { transform: scale(0.98); }
         #menu { margin-bottom: 10px; }
         .toast-msg { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #27ae60; color: white; padding: 10px 24px; border-radius: 50px; font-size: 14px; font-weight: bold; z-index: 10000; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .toast-msg.show { opacity: 1; }
@@ -118,12 +121,14 @@
 <div id="modal">
     <div class="modal-body">
         <h3 style="text-align:center; color:var(--gold); margin-top:0;">سلة طلباتك</h3>
-        <div style="display:flex; gap:5px; margin-bottom:15px;">
-            <button id="m-in" onclick="setMode('in')" style="flex:1; padding:8px; border-radius:5px; border:1px solid var(--gold); background:var(--dark-red); color:white;">طلب من داخل المطعم<br><span style="font-size: 11px; opacity: 0.9;">اعرض الشاشة على الكاشير</span></button>
-            <button id="m-out" onclick="setMode('out')" style="flex:1; padding:8px; border-radius:5px; border:1px solid #333; background:#222; color:#777;">طلب من خارج المطعم<br><span style="font-size: 11px; opacity: 0.8;">إرسال عبر واتساب</span></button> 
-        </div>
+        
         <div id="list"></div>
         <h2 id="total" style="text-align:center; color:var(--gold); margin:15px 0;">0 ر.ي</h2>
+        
+        <div class="order-buttons">
+            <button onclick="sendInternalOrder()" class="internal-btn" style="background:#D4AF37; color:#000;">🏠 طلب داخلي</button>
+            <button onclick="sendExternalOrder()" class="external-btn" style="background:#25d366; color:#000;">📍 طلب خارجي (موقع جغرافي)</button>
+        </div>
         
         <div class="split-box" style="margin: 15px 0; padding: 12px; background: #161616; border: 1px dashed var(--gold); border-radius: 12px; text-align: center;">
             <label style="color: #aaa; font-size: 12px; display: block; margin-bottom: 8px;">👥 تقسيم الفاتورة (للمجموعات)</label>
@@ -142,10 +147,6 @@
             <button onclick="loadFavoriteMeal()" class="action-btn load-fav-btn" style="flex:1;">⭐ استدعاء المفضلة</button>
         </div>
         
-        <div id="qr-area" style="text-align:center; display:none; margin-bottom:15px;">
-            <div id="qr" style="background:white; padding:10px; display:inline-block; border-radius:10px;"></div>
-        </div>
-        <button id="wa" onclick="send()" class="action-btn wa-btn" style="display:none;">إرسال عبر الواتساب ✅</button>
         <button onclick="forceClearCart()" class="action-btn clear-btn">إفراغ السلة 🗑️</button>
         <button onclick="closeC()" class="action-btn close-btn">إغلاق والعودة للقائمة</button>
     </div>
@@ -155,10 +156,10 @@
 
 <script>
     // =============================================
-    // ضع مصفوفة الأصناف (menuItems) هنا
+    // ⭐⭐⭐ ضع مصفوفة الأصناف (menuItems) هنا ⭐⭐⭐
     // =============================================
     const menuItems = [
-        { id: 616, name: "ربع بروست", price: 1200, category: "قسم البروست البلدي", meal: "الكل" },
+                { id: 616, name: "ربع بروست", price: 1200, category: "قسم البروست البلدي", meal: "الكل" },
         { id: 96, name: "حبه بروست", price: 4400, category: "قسم البروست البلدي", meal: "الكل" },
         { id: 97, name: "نص بروست", price: 2200, category: "قسم البروست البلدي", meal: "الكل" },
         { id: 98, name: "ربع بروست", price: 1100, category: "قسم البروست البلدي", meal: "الكل" },
@@ -792,16 +793,187 @@
         { id: 31, name: "حبه دجاج شوايه", price: 2200, category: "قسم دجاج الشواية", meal: "غداء" },
         { id: 32, name: "نص حبه دجاج شوايه", price: 1100, category: "قسم دجاج الشواية", meal: "غداء" },
         { id: 33, name: "ربع دجاج شوايه", price: 550, category: "قسم دجاج الشواية", meal: "غداء" }
+
+
     ];
 
-    menuItems.forEach(item => {
-        if (item.name.includes("دجاج") && !item.name.includes("بلدي")) {
-            item.name = item.name.replace("دجاج", "دجاج بلدي");
+    // =============================================
+    // إعدادات النظام - قم بتعديل الأرقام حسب رغبتك
+    // =============================================
+    const CASHIER_PHONE = "967778213277";   // رقم واتساب الكاشير (الطلبات الداخلية)
+    const DELIVERY_PHONE = "967778213277";  // رقم واتساب التوصيل (الطلبات الخارجية)
+    
+    let cart = {};
+    let currentMeal = 'الكل';
+    let currentCat = 'الكل';
+
+    // =============================================
+    // دوال إرسال الطلبات
+    // =============================================
+    
+    // الطلب الداخلي
+    function sendInternalOrder() {
+        if (Object.keys(cart).length === 0) {
+            showToast('⚠️ السلة فارغة، أضف أصنافاً أولاً');
+            return;
         }
-    });
+        
+        let roomNumber = prompt("🏠 يرجى إدخال رقم الغرفة أو الطاولة:\n(مثال: غرفة 3  أو  كاولة 5)");
+        
+        if (!roomNumber) {
+            showToast('❌ تم إلغاء الطلب');
+            return;
+        }
+        
+        roomNumber = roomNumber.trim();
+        if (roomNumber === "") {
+            showToast('❌ رقم الغرفة أو الطاولة مطلوب');
+            return;
+        }
+        
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('ar-EG');
+        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        
+        let msg = "🏨 *طلب داخلي جديد - مطاعم طوفان الأقصى* 🏨\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `📅 التاريخ: ${formattedDate}\n`;
+        msg += `🕐 الوقت: ${formattedTime}\n`;
+        msg += `📍 المكان: ${roomNumber}\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "*📋 تفاصيل الطلب:*\n\n";
+        
+        let total = 0;
+        for(let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if(item) {
+                const itemTotal = item.price * cart[id];
+                total += itemTotal;
+                msg += `• ${item.name}\n`;
+                msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
+            }
+        }
+        
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `💰 *الإجمالي: ${total} ريال*\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+        msg += `👨‍🍳 *تنبيه للمباشر:* يرجى التوجه إلى ${roomNumber} لاستلام المبلغ (${total} ريال) وتجهيز الطلب.\n`;
+        msg += "✅ سيتم إيصال الطلب فور تجهيزه.";
+        
+        window.open(`https://wa.me/${CASHIER_PHONE}?text=${encodeURIComponent(msg)}`);
+        showToast('✅ تم إرسال الطلب الداخلي بنجاح');
+    }
+    
+    // الطلب الخارجي - مع الموقع الجغرافي
+    function sendExternalOrder() {
+        if (Object.keys(cart).length === 0) {
+            showToast('⚠️ السلة فارغة، أضف أصنافاً أولاً');
+            return;
+        }
+        
+        let sendLocation = confirm("📍 هل توافق على إرسال موقعك الجغرافي الحالي؟\n\n" +
+                                   "✅ نعم: سيرى مندوب التوصيل موقعك بالضبط على الخريطة\n" +
+                                   "❌ لا: سيطلب منك إدخال عنوان نصي بديل");
+        
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('ar-EG');
+        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        
+        let msg = "🚚 *طلب خارجي (توصيل) - مطاعم طوفان الأقصى* 🚚\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `📅 التاريخ: ${formattedDate}\n`;
+        msg += `🕐 الوقت: ${formattedTime}\n`;
+        
+        if (sendLocation) {
+            msg += "🗺️ *سيتم إرسال الموقع الجغرافي بشكل منفصل* 🗺️\n";
+            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            msg += "*📋 تفاصيل الطلب:*\n\n";
+            
+            let total = 0;
+            for(let id in cart) {
+                const item = menuItems.find(x => x.id == id);
+                if(item) {
+                    const itemTotal = item.price * cart[id];
+                    total += itemTotal;
+                    msg += `• ${item.name}\n`;
+                    msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
+                }
+            }
+            
+            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            msg += `💰 *الإجمالي: ${total} ريال*\n`;
+            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+            msg += "📞 سيتم التواصل معكم لتأكيد الطلب.";
+            
+            const deliveryUrl = `https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`;
+            window.open(deliveryUrl);
+            
+            if (navigator.geolocation) {
+                showToast('📍 جاري تحديد موقعك...');
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const locationMsg = `📍 *موقع الزبون (طلب جديد)*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🗺️ رابط الخريطة:\nhttps://maps.google.com/?q=${lat},${lng}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nهذا هو موقع الزبون الحالي، يرجى استخدامه للتوصيل.`;
+                        window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(locationMsg)}`);
+                        showToast('✅ تم إرسال الطلب والموقع بنجاح');
+                    },
+                    (error) => {
+                        console.error("خطأ في تحديد الموقع:", error);
+                        let errorMsg = "⚠️ لم نتمكن من تحديد موقعك تلقائياً.\n";
+                        if (error.code === 1) errorMsg += "يرجى تمكين خدمة الموقع من إعدادات المتصفح ثم إعادة المحاولة.";
+                        else if (error.code === 2) errorMsg += "تعذر الحصول على الموقع، يرجى التحقق من اتصال الإنترنت.";
+                        else errorMsg += "يرجى إرسال موقعك يدوياً عبر واتساب.";
+                        showToast(errorMsg);
+                    }
+                );
+            } else {
+                showToast('⚠️ متصفحك لا يدعم مشاركة الموقع، يرجى إرسال الموقع يدوياً');
+            }
+        } 
+        else {
+            let address = prompt("🚚 يرجى إدخال عنوان التوصيل (الشارع، الحي، المعلم البارز):");
+            
+            if (!address) {
+                showToast('❌ تم إلغاء الطلب');
+                return;
+            }
+            
+            address = address.trim();
+            if (address === "") {
+                showToast('❌ عنوان التوصيل مطلوب');
+                return;
+            }
+            
+            msg += `📍 العنوان: ${address}\n`;
+            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            msg += "*📋 تفاصيل الطلب:*\n\n";
+            
+            let total = 0;
+            for(let id in cart) {
+                const item = menuItems.find(x => x.id == id);
+                if(item) {
+                    const itemTotal = item.price * cart[id];
+                    total += itemTotal;
+                    msg += `• ${item.name}\n`;
+                    msg += `  الكمية: ${cart[id]}  |  السعر: ${itemTotal} ريال\n\n`;
+                }
+            }
+            
+            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            msg += `💰 *الإجمالي: ${total} ريال*\n`;
+            msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+            msg += "📞 سيتم التواصل معكم لتأكيد الطلب.";
+            
+            window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`);
+            showToast('✅ تم إرسال الطلب الخارجي (بدون موقع)');
+        }
+    }
 
-    let cart = {}; let currentMeal = 'الكل'; let currentCat = 'الكل'; let mode = 'in';
-
+    // =============================================
+    // باقي دوال النظام
+    // =============================================
+    
     function showToast(message) {
         const toast = document.getElementById('toastMsg');
         toast.textContent = message || '✅ تم إضافة الصنف للسلة';
@@ -945,13 +1117,16 @@
     setTimeout(() => { const splash = document.getElementById('splash'); if(splash) splash.style.display = 'none'; init(); }, 3000);
 
     function init() { renderCats(); render(); }
+    
     function renderCats() {
         const bar = document.getElementById('catBar');
         const fItems = currentMeal === 'الكل' ? menuItems : menuItems.filter(i => i.meal === currentMeal || i.meal === 'الكل');
         const uniqueCats = ['الكل', ...new Set(fItems.map(i => i.category))];
         bar.innerHTML = uniqueCats.map(c => `<div class="cat-item ${c === currentCat ? 'active' : ''}" onclick="filterCat('${c.replace(/'/g, "\\'")}')">${c}</div>`).join('');
     }
+    
     function filterCat(cat) { currentCat = cat; renderCats(); render(); }
+    
     function render(q='') {
         const area = document.getElementById('menu');
         const searchTerm = q.toLowerCase();
@@ -963,7 +1138,9 @@
         });
         area.innerHTML = f.map(i => `<div class="item"><div style="display:flex; align-items:center; flex-wrap:wrap; flex:1;"><span class="item-id">${i.id}</span><span class="item-name">${i.name}</span></div><div style="display:flex; align-items:center; gap:8px;"><span class="item-price">${i.price}</span><button class="add-btn" onclick="add(${i.id}, 1)">+</button></div></div>`).join('');
     }
+    
     function add(id, change) { cart[id] = (cart[id] || 0) + change; if(cart[id] <= 0) delete cart[id]; updateUI(); showToast(); }
+    
     function updateUI() {
         const count = Object.values(cart).reduce((a,b)=>a+b,0);
         document.getElementById('b').innerText = count;
@@ -973,26 +1150,25 @@
         if(document.getElementById('modal').style.display === 'flex') renderC();
         calculateSplit();
     }
+    
     function openC() { document.getElementById('modal').style.display='flex'; renderC(); }
     function closeC() { document.getElementById('modal').style.display='none'; }
+    
     function renderC() {
         const list = document.getElementById('list');
-        let t = 0; let h = ''; let qrD = 'ID:';
+        let t = 0; let h = '';
         for(let id in cart) {
             const i = menuItems.find(x => x.id == id);
             if(i) {
                 t += i.price * cart[id];
-                qrD += `${id}x${cart[id]},`;
                 h += `<div class="cart-row"><span><span style="color:var(--gold);">${id}</span> ${i.name}</span><div style="display:flex; align-items:center; gap:6px;"><button class="qty-btn" onclick="add(${id},-1)">-</button><span style="min-width:25px; text-align:center;">${cart[id]}</span><button class="qty-btn" onclick="add(${id},1)">+</button></div></div>`;
             }
         }
         list.innerHTML = h || '<p style="text-align:center; padding:20px; color:#fff;">السلة فارغة</p>';
         document.getElementById('total').innerText = t + " ر.ي";
-        document.getElementById('qr-area').style.display = (mode==='in' && t>0) ? 'block' : 'none';
-        document.getElementById('wa').style.display = (mode==='out' && t>0) ? 'block' : 'none';
-        if(mode==='in' && t>0) document.getElementById('qr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrD)}">`;
         calculateSplit();
     }
+    
     function forceClearCart() {
         if(Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
         let modalConfirm = document.createElement('div');
@@ -1002,40 +1178,18 @@
         document.getElementById('confirmYes').onclick = () => { cart = {}; updateUI(); closeC(); showToast('✅ تم إفراغ السلة'); modalConfirm.remove(); };
         document.getElementById('confirmNo').onclick = () => modalConfirm.remove();
     }
+    
     function setM(t, btn) { currentMeal = t; currentCat = 'الكل'; document.querySelectorAll('.tab').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderCats(); render(); }
-    function setMode(m) { mode = m; document.getElementById('m-in').style.background = m==='in' ? 'var(--dark-red)' : '#222'; document.getElementById('m-out').style.background = m==='out' ? 'var(--dark-red)' : '#222'; renderC(); }
+    
     document.getElementById('search').addEventListener('input', (e)=>render(e.target.value));
-    function send() {
-        if(Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString('ar-EG');
-        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-        let msg = "🍽️ *الأخوة مطاعم وبروست طوفان الأقصى* 🍽️\n";
-        msg += `📅 التاريخ: ${formattedDate}   🕐 الوقت: ${formattedTime}\n\n`;
-        msg += "نرجو منكم تجهيز الطلبات التالية:\n\n─────────────────\n";
-        let total = 0;
-        for(let id in cart) {
-            const i = menuItems.find(x => x.id == id);
-            if(i) {
-                const itemTotal = i.price * cart[id];
-                total += itemTotal;
-                msg += `\n📌 *${i.name}*\n   🆔 رقم: ${id}\n   🔢 العدد: ${cart[id]}\n   💰 السعر: ${itemTotal} ر.ي\n`;
-            }
-        }
-        msg += "\n─────────────────\n";
-        msg += `💰 *الإجمالي الكلي: ${total} ر.ي*\n`;
-        window.open(`https://wa.me/967778213277?text=${encodeURIComponent(msg)}`);
-    }
 </script>
 
-<!-- كود تسجيل Service Worker (لتفعيل التثبيت) -->
 <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js');
     }
 </script>
 
-<!-- شريط التوقيع السفلي -->
 <div style="text-align:center; padding:20px; margin-top:20px; border-top:1px solid #333; background:#0a0a0a;">
     <hr style="border:0; border-top:2px solid #c5a059; margin-bottom:10px; width:40%; margin-left:auto; margin-right:auto; opacity:0.5;">
     <p style="color:#ffffff; font-size:14px; margin:0; font-weight:bold;">
