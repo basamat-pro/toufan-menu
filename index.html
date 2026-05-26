@@ -29,6 +29,7 @@
             --dark-red-glow: rgba(139, 0, 0, 0.3);
             --gray: #1e1e1e;
             --gray-light: #2a2a2a;
+            --red: #ff3333;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -134,11 +135,11 @@
         }
         .item:active { transform: scale(0.98); }
         .item-id {
-            color: var(--gold);
+            color: var(--red) !important;
             font-weight: bold;
             font-size: 13px;
             margin-left: 10px;
-            background: rgba(197, 160, 89, 0.1);
+            background: rgba(255, 51, 51, 0.1);
             padding: 2px 8px;
             border-radius: 20px;
         }
@@ -576,7 +577,8 @@
             if(item) {
                 const itemTotal = item.price * cart[id];
                 total += itemTotal;
-                orderDetails += `• ${item.name}\n   الكمية: ${cart[id]}  |  ${itemTotal} ريال\n\n`;
+                // إضافة رقم الصنف
+                orderDetails += `• [${item.id}] ${item.name}\n   الكمية: ${cart[id]}  |  ${itemTotal} ريال\n\n`;
             }
         }
         
@@ -618,7 +620,8 @@
             if(item) {
                 const itemTotal = item.price * cart[id];
                 total += itemTotal;
-                orderDetails += `• ${item.name}\n   الكمية: ${cart[id]}  |  ${itemTotal} ريال\n\n`;
+                // إضافة رقم الصنف
+                orderDetails += `• [${item.id}] ${item.name}\n   الكمية: ${cart[id]}  |  ${itemTotal} ريال\n\n`;
             }
         }
         
@@ -691,7 +694,7 @@
             const i = menuItems.find(x => x.id == id);
             if(i) {
                 total += i.price * cart[id];
-                text += `${i.name} x${cart[id]} = ${i.price * cart[id]} ر.ي\n`;
+                text += `[${i.id}] ${i.name} x${cart[id]} = ${i.price * cart[id]} ر.ي\n`;
             }
         }
         text += `─────────────────\n💰 الإجمالي: ${total} ر.ي`;
