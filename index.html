@@ -13,6 +13,9 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- ============================================= -->
+    <!-- مصفوفة الأصناف (منفصلة)                       -->
+    <!-- ============================================= -->
     <script src="menu-data.js"></script>
     
     <style>
@@ -512,7 +515,7 @@
     let currentCat = 'الكل';
     
     // =============================================
-    // الطلب الداخلي - يدخل الزبون رقم فقط
+    // الطلب الداخلي
     // =============================================
     function showInternalDialog() {
         if (Object.keys(cart).length === 0) {
@@ -566,9 +569,6 @@
         const formattedDate = now.toLocaleDateString('ar-EG');
         const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
         
-        // تحويل الرقم إلى نص مفهوم
-        const locationText = `طاولة/غرفة رقم ${roomNumber}`;
-        
         let orderDetails = "";
         let total = 0;
         for(let id in cart) {
@@ -580,103 +580,33 @@
             }
         }
         
-        // رسالة للكاشير
         let msg = "🏨 *طلب داخلي جديد - طوفان الأقصى* 🏨\n";
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += `📅 ${formattedDate}  |  🕐 ${formattedTime}\n`;
-        msg += `📍 ${locationText}\n`;
+        msg += `📍 طاولة/غرفة رقم ${roomNumber}\n`;
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += orderDetails;
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += `💰 الإجمالي: ${total} ريال\n`;
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msg += `👨‍🍳 توجه إلى ${locationText} - استلم ${total} ريال`;
+        msg += `👨‍🍳 توجه إلى الطاولة رقم ${roomNumber} - استلم ${total} ريال`;
         
         window.open(`https://wa.me/${CASHIER_PHONE}?text=${encodeURIComponent(msg)}`);
         showToast('✅ تم إرسال الطلب');
     }
     
     // =============================================
-    // الطلب الخارجي - حل بسيط: يفتح واتساب ويرسل الموقع بنفسه
+    // الطلب الخارجي (بدون موقع)
     // =============================================
     function showExternalDialog() {
         if (Object.keys(cart).length === 0) {
             showToast('⚠️ السلة فارغة');
             return;
         }
-        
-        const dialog = document.createElement('div');
-        dialog.className = 'custom-dialog';
-        dialog.innerHTML = `
-            <div class="dialog-box">
-                <h3>📍 طلب خارجي</h3>
-                <p>اختر طريقة إرسال الموقع:</p>
-                <div class="dialog-buttons" style="flex-direction: column; gap: 10px;">
-                    <button class="dialog-btn confirm" id="sendLocationBtn" style="background:linear-gradient(135deg,#25d366,#128C7E);">📍 إرسال الموقع عبر واتساب</button>
-                    <button class="dialog-btn" id="noLocationBtn" style="background:#333;">📝 إرسال بدون موقع</button>
-                    <button class="dialog-btn cancel" id="cancelBtn" style="background:#1a1a1a; border:1px solid #555;">❌ إلغاء</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(dialog);
-        
-        dialog.querySelector('#sendLocationBtn').onclick = () => {
-            dialog.remove();
-            sendOrderWithLocation();
-        };
-        
-        dialog.querySelector('#noLocationBtn').onclick = () => {
-            dialog.remove();
-            sendOrderWithoutLocation();
-        };
-        
-        dialog.querySelector('#cancelBtn').onclick = () => {
-            dialog.remove();
-            showToast('❌ تم إلغاء الطلب');
-        };
+        sendExternalOrder();
     }
     
-    function sendOrderWithLocation() {
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString('ar-EG');
-        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-        
-        let orderDetails = "";
-        let total = 0;
-        for(let id in cart) {
-            const item = menuItems.find(x => x.id == id);
-            if(item) {
-                const itemTotal = item.price * cart[id];
-                total += itemTotal;
-                orderDetails += `• ${item.name}\n   الكمية: ${cart[id]}  |  ${itemTotal} ريال\n\n`;
-            }
-        }
-        
-        // رسالة الطلب
-        let msg = "🚚 *طلب خارجي - طوفان الأقصى* 🚚\n";
-        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msg += `📅 ${formattedDate}  |  🕐 ${formattedTime}\n`;
-        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msg += orderDetails;
-        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msg += `💰 الإجمالي: ${total} ريال\n`;
-        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msg += "📍 بعد إرسال هذه الرسالة، سيفتح واتساب مرة أخرى لإرسال الموقع\n";
-        msg += "📌 اضغط على أيقونة 📎 ثم الموقع";
-        
-        // نرسل الطلب أولاً
-        window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`);
-        
-        // بعد ثانية، نفتح واتساب لإرسال الموقع
-        setTimeout(() => {
-            const locationMsg = "📍 *موقعي الحالي للتوصيل*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nيرجى الضغط على أيقونة 📎 ثم اختيار 'الموقع' لإرسال موقعي الحالي.\nأو استخدم الرابط:\nhttps://maps.google.com/?q=موقعي+الحالي";
-            window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(locationMsg)}`);
-        }, 1000);
-        
-        showToast('✅ سيتم فتح واتساب مرتين: للطلب ثم للموقع');
-    }
-    
-    function sendOrderWithoutLocation() {
+    function sendExternalOrder() {
         const now = new Date();
         const formattedDate = now.toLocaleDateString('ar-EG');
         const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
@@ -695,13 +625,12 @@
         let msg = "🚚 *طلب خارجي - طوفان الأقصى* 🚚\n";
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += `📅 ${formattedDate}  |  🕐 ${formattedTime}\n`;
-        msg += "⚠️ *لم يتم إرسال الموقع*\n";
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += orderDetails;
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         msg += `💰 الإجمالي: ${total} ريال\n`;
         msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msg += "📞 سيتم الاتصال لتحديد العنوان";
+        msg += "📍 سيتم التواصل لتأكيد العنوان بعد الطلب";
         
         window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`);
         showToast('✅ تم إرسال الطلب');
@@ -787,11 +716,11 @@
     }, 2500);
     
     function init() {
-        if (menuItems && menuItems.length) {
+        if (typeof menuItems !== 'undefined' && menuItems && menuItems.length) {
             renderCats();
             render();
         } else {
-            document.getElementById('menu').innerHTML = '<div style="text-align:center;padding:50px;color:red;">❌ خطأ في تحميل الأصناف</div>';
+            document.getElementById('menu').innerHTML = '<div style="text-align:center;padding:50px;color:red;">❌ خطأ في تحميل الأصناف - تأكد من وجود ملف menu-data.js</div>';
         }
     }
     
@@ -896,6 +825,8 @@
     }
     
     document.getElementById('search').addEventListener('input', (e) => render(e.target.value));
+    
+    // ملاحظة: المصفوفة menuItems تُستورد من ملف menu-data.js
 </script>
 
 <script>
