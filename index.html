@@ -462,6 +462,23 @@
             .eid-card p { font-size: 1.5rem; }
             .eid-card { padding: 25px 30px; border-radius: 40px; }
         }
+        
+        /* تذييل المهندس - يظهر فقط داخل mainApp */
+        .engineer-footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid rgba(197,160,89,0.2);
+            background: #0a0a0a;
+            margin-top: 20px;
+        }
+        .engineer-footer p {
+            color: #ffffff;
+            font-size: 14px;
+            margin: 0;
+        }
+        .engineer-footer span {
+            color: var(--gold);
+        }
     </style>
 </head>
 <body>
@@ -540,6 +557,12 @@
     </div>
 
     <div id="toastMsg" class="toast-msg">✅ تم إضافة الصنف للسلة</div>
+    
+    <!-- تم نقل تذييل المهندس إلى هنا حتى لا يظهر قبل mainApp -->
+    <div class="engineer-footer">
+        <p>تصميم وتنفيذ المهندس: <span>محمد الصالحي</span></p>
+        <p><span>Basamat Pro - 778213277</span></p>
+    </div>
 </div>
 
 <script>
@@ -928,12 +951,6 @@
 <script>
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
 </script>
-
-<!-- توقيع المهندس وأرقام التواصل -->
-<div style="text-align:center; padding:20px; border-top:1px solid rgba(197,160,89,0.2); background:#0a0a0a;">
-    <p style="color:#ffffff; font-size:14px; margin:0;">تصميم وتنفيذ المهندس: <span style="color:var(--gold);">محمد الصالحي</span></p>
-    <p style="color:var(--gold); font-size:14px; margin:5px 0 0 0;">Basamat Pro - 778213277</p>
-</div>
 
 </body>
 </html>
