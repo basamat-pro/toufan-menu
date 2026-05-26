@@ -1,256 +1,867 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>سلة عصائر طوفان</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Tajawal', 'Segoe UI', system-ui, sans-serif;
-      background: #fef7e8;
-      padding: 20px;
-      padding-bottom: 80px;
-    }
-
-    /* زر إفراغ السلة */
-    .empty-cart-btn {
-      background-color: #e53e3e;
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      font-size: 18px;
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.2s;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 280px;
-      margin: 20px auto;
-      display: block;
-    }
-
-    .empty-cart-btn:active {
-      transform: scale(0.97);
-    }
-
-    /* المودال الأنيق */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      visibility: hidden;
-      opacity: 0;
-      transition: all 0.25s ease;
-    }
-
-    .modal-overlay.active {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .modal-container {
-      background: white;
-      width: 85%;
-      max-width: 400px;
-      border-radius: 40px;
-      padding: 28px 20px 32px;
-      text-align: center;
-      box-shadow: 0 25px 45px rgba(0,0,0,0.3);
-      transform: scale(0.9);
-      transition: transform 0.2s ease;
-    }
-
-    .modal-overlay.active .modal-container {
-      transform: scale(1);
-    }
-
-    .modal-icon {
-      font-size: 56px;
-      margin-bottom: 12px;
-    }
-
-    .modal-title {
-      font-size: 26px;
-      font-weight: 800;
-      color: #1e293b;
-      margin-bottom: 12px;
-    }
-
-    .modal-message {
-      font-size: 16px;
-      color: #475569;
-      line-height: 1.45;
-      margin-bottom: 28px;
-      padding: 0 8px;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      border: none;
-      padding: 12px 26px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 60px;
-      cursor: pointer;
-      transition: 0.15s;
-      font-family: inherit;
-      min-width: 110px;
-    }
-
-    .btn-confirm {
-      background-color: #e53e3e;
-      color: white;
-    }
-
-    .btn-confirm:active {
-      background-color: #b91c1c;
-      transform: scale(0.96);
-    }
-
-    .btn-cancel {
-      background-color: #e2e8f0;
-      color: #1e293b;
-    }
-
-    .btn-cancel:active {
-      background-color: #cbd5e1;
-      transform: scale(0.96);
-    }
-
-    /* مظهر السلة للعرض */
-    .cart-box {
-      background: white;
-      border-radius: 32px;
-      padding: 20px;
-      margin-top: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #f0e3d4;
-      padding: 14px 0;
-      font-size: 16px;
-    }
-
-    .cart-item:last-child {
-      border-bottom: none;
-    }
-
-    .total {
-      margin-top: 16px;
-      text-align: left;
-      font-weight: bold;
-      font-size: 18px;
-      border-top: 1px dashed #ddd;
-      padding-top: 12px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>بصمات برو - طوفان الأقصى</title>
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="بصمات برو">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- مصفوفة الأصناف (منفصلة) -->
+    <script src="menu-data.js"></script>
+    
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-card: #141414;
+            --gold: #c5a059;
+            --gold-light: #d4af37;
+            --gold-glow: rgba(197, 160, 89, 0.3);
+            --dark-red: #8b0000;
+            --dark-red-glow: rgba(139, 0, 0, 0.3);
+            --gray: #1e1e1e;
+            --gray-light: #2a2a2a;
+            --red: #ff3333;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: var(--bg);
+            font-family: 'Tajawal', sans-serif;
+            color: #ffffff;
+            padding-top: 115px;
+        }
+        
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--gray); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+        
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #0d0d0d;
+            z-index: 100;
+            padding: 8px 10px 5px 10px;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+        }
+        
+        .scroll-content { padding: 8px 10px 85px 10px; }
+        
+        .inp {
+            width: 100%;
+            padding: 14px;
+            background: var(--gray);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            color: var(--gold);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            outline: none;
+            font-size: 14px;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .inp:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+        
+        .tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            background: var(--gray);
+            border: none;
+            color: #aaa;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.1s ease;
+        }
+        .tab:active { transform: scale(0.96); }
+        .tab.active {
+            background: linear-gradient(135deg, var(--dark-red), #6b0000);
+            color: #fff;
+            box-shadow: 0 4px 15px var(--dark-red-glow);
+        }
+        
+        .cat-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+        }
+        .cat-item {
+            padding: 8px 18px;
+            background: var(--gray);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            border-radius: 30px;
+            font-size: 13px;
+            white-space: nowrap;
+            color: #aaa;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        .cat-item:active { transform: scale(0.95); }
+        .cat-item.active {
+            background: linear-gradient(135deg, var(--gold), #a07e3a);
+            color: #000;
+            border-color: var(--gold);
+            font-weight: bold;
+            box-shadow: 0 4px 15px var(--gold-glow);
+        }
+        
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border-right: 3px solid var(--gold);
+            transition: all 0.1s ease;
+        }
+        .item:active { transform: scale(0.98); }
+        .item-id {
+            color: var(--red) !important;
+            font-weight: bold;
+            font-size: 13px;
+            margin-left: 10px;
+            background: rgba(255, 51, 51, 0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .item-name { font-size: 14px; flex: 1; text-align: right; font-weight: 500; }
+        .item-price {
+            color: var(--gold);
+            margin-left: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            min-width: 60px;
+            text-align: left;
+        }
+        .add-btn {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--gray-light), var(--gray));
+            color: var(--gold);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            border-radius: 12px;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s ease;
+        }
+        .add-btn:active {
+            transform: scale(0.92);
+            background: var(--dark-red);
+            color: white;
+        }
+        
+        .cart-wrapper {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #cart-btn {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--dark-red), #6b0000);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            border: 2px solid var(--gold);
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 15px var(--gold-glow);
+            transition: all 0.1s ease;
+        }
+        #cart-btn:active { transform: scale(0.94); }
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #fff;
+            color: #000;
+            border-radius: 30px;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .floating-total {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--gold);
+            font-weight: bold;
+            background: rgba(0,0,0,0.9);
+            padding: 5px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(197, 160, 89, 0.3);
+        }
+        
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.97);
+            z-index: 10001;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-body {
+            background: linear-gradient(145deg, #111, #0a0a0a);
+            width: 92%;
+            max-width: 500px;
+            max-height: 88%;
+            border-radius: 24px;
+            padding: 22px;
+            border: 1px solid var(--gold);
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px var(--gold-glow);
+        }
+        
+        .cart-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.1);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .qty-btn {
+            width: 34px;
+            height: 34px;
+            background: var(--gray);
+            color: var(--gold);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        .qty-btn:active { transform: scale(0.92); background: var(--dark-red); color: white; }
+        
+        .action-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .action-btn:active { transform: scale(0.97); }
+        .internal-btn { background: linear-gradient(135deg, var(--gold), #a07e3a); color: #000; box-shadow: 0 4px 15px var(--gold-glow); }
+        .external-btn { background: linear-gradient(135deg, #25d366, #128C7E); color: #000; }
+        .close-btn { background: var(--gray); color: white; border: 1px solid #333; }
+        .clear-btn { background: none; color: #ff3333; border: 1px solid #333; }
+        .order-buttons { display: flex; gap: 12px; margin: 15px 0; }
+        .order-buttons button { flex: 1; padding: 14px; border-radius: 14px; font-weight: bold; cursor: pointer; transition: all 0.1s ease; font-size: 15px; }
+        .order-buttons button:active { transform: scale(0.96); }
+        
+        .copy-btn {
+            background: var(--gray);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        .copy-btn:active { transform: scale(0.95); background: var(--gold); color: #000; }
+        .fav-btn { background: linear-gradient(135deg, #f39c12, #e67e22); color: #000; }
+        .load-fav-btn { background: linear-gradient(135deg, #3498db, #2980b9); color: #fff; }
+        
+        .split-box { margin: 15px 0; padding: 12px; background: #161616; border: 1px dashed var(--gold); border-radius: 14px; text-align: center; display: none; }
+        .split-box.visible { display: block; }
+        .split-box input { width: 70px; padding: 8px; background: #0a0a0a; border: 1px solid var(--gold); color: var(--gold); border-radius: 10px; text-align: center; font-weight: bold; }
+        
+        .custom-dialog, .clear-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.97);
+            z-index: 20000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .dialog-box {
+            background: linear-gradient(145deg, #1a1a1a, #111);
+            padding: 28px;
+            border-radius: 28px;
+            text-align: center;
+            width: 85%;
+            max-width: 340px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px var(--gold-glow);
+        }
+        .dialog-box h3 { color: var(--gold); margin-bottom: 15px; font-size: 22px; }
+        .dialog-box p { color: #aaa; margin-bottom: 15px; font-size: 13px; }
+        .dialog-input {
+            width: 100%;
+            padding: 14px;
+            background: #0a0a0a;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            border-radius: 16px;
+            font-size: 48px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 22px;
+            outline: none;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .dialog-buttons { display: flex; gap: 12px; }
+        .dialog-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            font-size: 14px;
+        }
+        .dialog-btn.confirm { background: linear-gradient(135deg, var(--gold), #a07e3a); color: #000; }
+        .dialog-btn.cancel { background: var(--gray); color: #fff; }
+        .dialog-btn:active { transform: scale(0.96); }
+        
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #0a0a0a, #050505);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .splash-logo {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--gold);
+            animation: pulse 1.2s ease-in-out infinite alternate;
+            box-shadow: 0 0 30px var(--gold-glow);
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px var(--gold-glow); }
+            100% { transform: scale(1.05); box-shadow: 0 0 50px var(--gold-glow); }
+        }
+        .splash-restaurant { color: #fff; font-size: 32px; font-weight: 900; margin-bottom: 50px; text-align: center; }
+        .slogan-box { border: 2px solid var(--gold); border-radius: 24px; padding: 14px 22px; background: rgba(197, 160, 89, 0.05); box-shadow: 0 0 25px var(--gold-glow); }
+        .splash-slogan { color: var(--gold); font-size: 15px; font-weight: bold; text-align: center; }
+        
+        .toast-msg {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #27ae60, #1e8449);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast-msg.show { opacity: 1; }
+        
+        .voice-search-btn {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: var(--gold);
+        }
+        .search-container { position: relative; }
+        
+        @media (max-width: 480px) {
+            body { padding-top: 105px; }
+            .splash-logo { width: 100px; height: 100px; }
+            .splash-restaurant { font-size: 26px; }
+            .dialog-input { font-size: 40px; }
+        }
+    </style>
 </head>
 <body>
 
-<h2 style="text-align:center;">🥤 سلة عصائر طوفان</h2>
-
-<div class="cart-box" id="cartContainer">
-  <div class="cart-item">
-    <span>🍹 عصير عرائسي طوقان الأقصى</span>
-    <span>358 ع.ر</span>
-  </div>
-  <div class="cart-item">
-    <span>🍓 عصير فراولة بالحليب</span>
-    <span>361 ع.ر</span>
-  </div>
-  <div class="cart-item">
-    <span>🥜 عصير مكسرات</span>
-    <span>364 ع.ر</span>
-  </div>
-  <div class="total">الإجمالي: 1,083 ع.ر</div>
-</div>
-
-<button class="empty-cart-btn" id="openModalBtn">🗑️ إفراغ السلة</button>
-
-<!-- مودال التأكيد الأنيق -->
-<div id="cartModal" class="modal-overlay">
-  <div class="modal-container">
-    <div class="modal-icon">⚠️🧹</div>
-    <div class="modal-title">إفراغ السلة؟</div>
-    <div class="modal-message">سيتم حذف جميع المنتجات نهائياً.<br>هل أنت متأكد؟</div>
-    <div class="modal-buttons">
-      <button class="btn btn-cancel" id="cancelBtn">إلغاء</button>
-      <button class="btn btn-confirm" id="confirmBtn">حسناً</button>
+<div id="splash">
+    <img src="https://i.postimg.cc/fS7ksRQm/shʿar-twfan-llbarkwd.png" alt="شعار مطاعم طوفان الأقصى" class="splash-logo">
+    <div class="splash-text">
+        <div class="splash-restaurant">مطاعم وبروست طوفان الأقصى</div>
+        <div class="slogan-box">
+            <div class="splash-slogan">بصمات برو..<br>حيث يبدأ الابتكار، وينتهي التقليد</div>
+        </div>
     </div>
-  </div>
 </div>
+
+<div class="fixed-header">
+    <marquee behavior="scroll" direction="right" scrollamount="5" style="background: #1a1a1a; padding: 8px 0; margin-bottom: 10px; border-radius: 30px; border: 2px solid #c5a059; color: #ffcc66; font-size: 14px; font-weight: bold;">
+        🍽️ مرحباً بكم في مطاعم وبروست طوفان الأقصى — أهلاً وسهلاً بكم 🤍 — نتمنى لكم تجربة ممتعة 🍽️
+    </marquee>
+    
+    <div class="search-container">
+        <input type="text" class="inp" id="search" placeholder="🔍 ابحث بالاسم أو الرقم...">
+        <button class="voice-search-btn" onclick="startVoiceSearch()">🎤</button>
+    </div>
+    <div class="tabs">
+        <button class="tab active" onclick="setM('الكل', this)">الكل</button>
+        <button class="tab" onclick="setM('صبوح وعشاء', this)">صبوح/عشاء</button>
+        <button class="tab" onclick="setM('غداء', this)">غداء</button>
+    </div>
+    <div class="cat-bar" id="catBar"></div>
+</div>
+
+<div class="scroll-content">
+    <div id="menu"></div>
+</div>
+
+<div class="cart-wrapper" onclick="openC()">
+    <div id="cart-btn">🛒<div class="badge" id="b">0</div></div>
+    <div class="floating-total" id="float-t">0 ر.ي</div>
+</div>
+
+<div id="modal">
+    <div class="modal-body">
+        <h3 style="text-align:center; color:var(--gold); margin-top:0;">🛒 سلة طلباتك</h3>
+        <div id="list"></div>
+        <h2 id="total" style="text-align:center; color:var(--gold); margin:15px 0;">0 ر.ي</h2>
+        
+        <div class="order-buttons">
+            <button onclick="showInternalDialog()" class="internal-btn">🏠 طلب داخلي</button>
+            <button onclick="showExternalDialog()" class="external-btn">📍 طلب خارجي</button>
+        </div>
+        
+        <div class="split-box" id="splitBox">
+            <label style="color: #aaa; font-size: 12px;">👥 تقسيم الفاتورة</label>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 8px;">
+                <span>عدد الأشخاص:</span>
+                <input type="number" id="num-people" value="1" min="1" oninput="calculateSplit()">
+            </div>
+            <div id="split-result" style="margin-top: 10px; color: #ff3333; font-weight: bold; display: none;">
+                نصيب كل شخص: <span id="per-person-price" style="color: var(--gold);">0</span> ر.ي
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; justify-content: center;">
+            <button onclick="copyCartToClipboard()" class="copy-btn">📋 نسخ الفاتورة</button>
+            <button onclick="saveFavoriteMeal()" class="action-btn fav-btn" style="flex:1;">❤️ حفظ كوجبة مفضلة</button>
+            <button onclick="loadFavoriteMeal()" class="action-btn load-fav-btn" style="flex:1;">⭐ استدعاء المفضلة</button>
+        </div>
+        
+        <button onclick="toggleSplitBox()" class="action-btn" style="background: #2a2a2a; color: var(--gold);">💰 تقسيم الفاتورة</button>
+        <button onclick="forceClearCart()" class="action-btn clear-btn">🗑️ إفراغ السلة</button>
+        <button onclick="closeC()" class="action-btn close-btn">❌ إغلاق</button>
+    </div>
+</div>
+
+<div id="toastMsg" class="toast-msg">✅ تمت الإضافة</div>
 
 <script>
-  // عناصر المودال
-  const modal = document.getElementById('cartModal');
-  const openBtn = document.getElementById('openModalBtn');
-  const confirmBtn = document.getElementById('confirmBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-  const cartContainer = document.getElementById('cartContainer');
-
-  // فتح المودال
-  openBtn.addEventListener('click', () => {
-    modal.classList.add('active');
-  });
-
-  // إغلاق المودال
-  function closeModal() {
-    modal.classList.remove('active');
-  }
-
-  // دالة إفراغ السلة الفعلية
-  function emptyCart() {
-    // حذف كل عناصر السلة
-    cartContainer.innerHTML = `
-      <div style="text-align:center; padding: 30px 0; color: #888;">
-        🛒 السلة فارغة
-      </div>
-    `;
-    closeModal();
-    // يمكنك إظهار رسالة قصيرة منبثقة (اختياري)
-    // alert("✅ تم إفراغ السلة");
-  }
-
-  confirmBtn.addEventListener('click', emptyCart);
-  cancelBtn.addEventListener('click', closeModal);
-
-  // إغلاق عند الضغط على الخلفية الرمادية
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
-
-  // إغلاق عند الضغط على زر الإلغاء في الجوال (بالإضافة)
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      closeModal();
+    // =============================================
+    // الإعدادات
+    // =============================================
+    const CASHIER_PHONE = "967778213277";
+    const DELIVERY_PHONE = "967778213277";
+    
+    let cart = {};
+    let currentMeal = 'الكل';
+    let currentCat = 'الكل';
+    
+    // =============================================
+    // الطلب الداخلي
+    // =============================================
+    function showInternalDialog() {
+        if (Object.keys(cart).length === 0) {
+            showToast('⚠️ السلة فارغة');
+            return;
+        }
+        
+        const dialog = document.createElement('div');
+        dialog.className = 'custom-dialog';
+        dialog.innerHTML = `
+            <div class="dialog-box">
+                <h3>🏠 طلب داخلي</h3>
+                <p>أدخل رقم الطاولة أو الغرفة</p>
+                <input type="number" class="dialog-input" id="roomInput" placeholder="3" autocomplete="off" style="font-size:48px; text-align:center;">
+                <div class="dialog-buttons">
+                    <button class="dialog-btn cancel" id="cancelDialog">إلغاء</button>
+                    <button class="dialog-btn confirm" id="confirmDialog">تأكيد</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(dialog);
+        
+        const input = dialog.querySelector('#roomInput');
+        input.focus();
+        
+        dialog.querySelector('#confirmDialog').onclick = () => {
+            let roomNumber = input.value.trim();
+            if (roomNumber === "") {
+                showToast('⚠️ الرجاء إدخال الرقم');
+                input.focus();
+                return;
+            }
+            dialog.remove();
+            sendInternalOrder(roomNumber);
+        };
+        
+        dialog.querySelector('#cancelDialog').onclick = () => {
+            dialog.remove();
+            showToast('❌ تم إلغاء الطلب');
+        };
+        
+        input.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                dialog.querySelector('#confirmDialog').click();
+            }
+        };
     }
-  });
+    
+    function sendInternalOrder(roomNumber) {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('ar-EG');
+        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        
+        let orderDetails = "";
+        let total = 0;
+        for(let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if(item) {
+                const itemTotal = item.price * cart[id];
+                total += itemTotal;
+                orderDetails += `• [${item.id}] ${item.name}\n   الكمية: ${cart[id]}  |  ${itemTotal} ريال\n\n`;
+            }
+        }
+        
+        let msg = "🏨 *طلب داخلي جديد - طوفان الأقصى* 🏨\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `📅 ${formattedDate}  |  🕐 ${formattedTime}\n`;
+        msg += `📍 طاولة/غرفة رقم ${roomNumber}\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += orderDetails;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `💰 الإجمالي: ${total} ريال\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `👨‍🍳 توجه إلى الطاولة رقم ${roomNumber} - استلم ${total} ريال`;
+        
+        window.open(`https://wa.me/${CASHIER_PHONE}?text=${encodeURIComponent(msg)}`);
+        showToast('✅ تم إرسال الطلب');
+    }
+    
+    // =============================================
+    // الطلب الخارجي (بدون موقع)
+    // =============================================
+    function showExternalDialog() {
+        if (Object.keys(cart).length === 0) {
+            showToast('⚠️ السلة فارغة');
+            return;
+        }
+        sendExternalOrder();
+    }
+    
+    function sendExternalOrder() {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('ar-EG');
+        const formattedTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        
+        let orderDetails = "";
+        let total = 0;
+        for(let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if(item) {
+                const itemTotal = item.price * cart[id];
+                total += itemTotal;
+                orderDetails += `• [${item.id}] ${item.name}\n   الكمية: ${cart[id]}  |  ${itemTotal} ريال\n\n`;
+            }
+        }
+        
+        let msg = "🚚 *طلب خارجي - طوفان الأقصى* 🚚\n";
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `📅 ${formattedDate}  |  🕐 ${formattedTime}\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += orderDetails;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += `💰 الإجمالي: ${total} ريال\n`;
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msg += "📍 سيتم التواصل لتأكيد العنوان بعد الطلب";
+        
+        window.open(`https://wa.me/${DELIVERY_PHONE}?text=${encodeURIComponent(msg)}`);
+        showToast('✅ تم إرسال الطلب');
+    }
+    
+    // =============================================
+    // الدوال الأساسية
+    // =============================================
+    
+    function showToast(message) {
+        const toast = document.getElementById('toastMsg');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+    
+    function toggleSplitBox() {
+        const box = document.getElementById('splitBox');
+        box.classList.toggle('visible');
+        if (box.classList.contains('visible')) calculateSplit();
+    }
+    
+    function startVoiceSearch() {
+        if (!('webkitSpeechRecognition' in window)) {
+            showToast('❌ المتصفح لا يدعم البحث الصوتي');
+            return;
+        }
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'ar-SA';
+        recognition.onstart = () => showToast('🎤 تحدث...');
+        recognition.onresult = (e) => {
+            document.getElementById('search').value = e.results[0][0].transcript;
+            render(document.getElementById('search').value);
+        };
+        recognition.start();
+    }
+    
+    function saveFavoriteMeal() {
+        if (Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
+        localStorage.setItem('favoriteMeal', JSON.stringify(cart));
+        showToast('❤️ تم حفظ الوجبة');
+    }
+    
+    function loadFavoriteMeal() {
+        let saved = localStorage.getItem('favoriteMeal');
+        if (!saved) { showToast('⭐ لا توجد وجبة محفوظة'); return; }
+        cart = JSON.parse(saved);
+        updateUI();
+        showToast('⭐ تم استدعاء الوجبة');
+    }
+    
+    function copyCartToClipboard() {
+        if (Object.keys(cart).length === 0) { showToast('⚠️ السلة فارغة'); return; }
+        let text = '🍽️ سلة الطلبات\n─────────────────\n';
+        let total = 0;
+        for(let id in cart) {
+            const i = menuItems.find(x => x.id == id);
+            if(i) {
+                total += i.price * cart[id];
+                text += `[${i.id}] ${i.name} x${cart[id]} = ${i.price * cart[id]} ر.ي\n`;
+            }
+        }
+        text += `─────────────────\n💰 الإجمالي: ${total} ر.ي`;
+        navigator.clipboard.writeText(text);
+        showToast('📋 تم النسخ');
+    }
+    
+    function calculateSplit() {
+        const totalText = document.getElementById('total').innerText;
+        const total = parseInt(totalText.replace(/[^0-9]/g, '')) || 0;
+        const people = parseInt(document.getElementById('num-people').value) || 1;
+        const resultDiv = document.getElementById('split-result');
+        if (people > 1 && total > 0) {
+            document.getElementById('per-person-price').innerText = Math.round(total / people);
+            resultDiv.style.display = 'block';
+        } else { resultDiv.style.display = 'none'; }
+    }
+    
+    // =============================================
+    // إفراغ السلة بنافذة أنيقة
+    // =============================================
+    function forceClearCart() {
+        if (Object.keys(cart).length === 0) {
+            showToast('⚠️ السلة فارغة');
+            return;
+        }
+        
+        const dialog = document.createElement('div');
+        dialog.className = 'clear-dialog';
+        dialog.innerHTML = `
+            <div class="dialog-box">
+                <h3>⚠️ تأكيد الإفراغ</h3>
+                <p>هل أنت متأكد من إفراغ السلة بالكامل؟</p>
+                <div class="dialog-buttons">
+                    <button class="dialog-btn cancel" id="cancelClear">إلغاء</button>
+                    <button class="dialog-btn confirm" id="confirmClear">نعم، إفراغ</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(dialog);
+        
+        dialog.querySelector('#confirmClear').onclick = () => {
+            cart = {};
+            updateUI();
+            closeC();
+            showToast('✅ تم إفراغ السلة');
+            dialog.remove();
+        };
+        
+        dialog.querySelector('#cancelClear').onclick = () => {
+            dialog.remove();
+            showToast('❌ تم إلغاء الإفراغ');
+        };
+    }
+    
+    setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+        init();
+    }, 2500);
+    
+    function init() {
+        if (typeof menuItems !== 'undefined' && menuItems && menuItems.length) {
+            renderCats();
+            render();
+        } else {
+            document.getElementById('menu').innerHTML = '<div style="text-align:center;padding:50px;color:red;">❌ خطأ في تحميل الأصناف - تأكد من وجود ملف menu-data.js</div>';
+        }
+    }
+    
+    function renderCats() {
+        const bar = document.getElementById('catBar');
+        if (!menuItems?.length) return;
+        const items = currentMeal === 'الكل' ? menuItems : menuItems.filter(i => i.meal === currentMeal || i.meal === 'الكل');
+        const cats = ['الكل', ...new Set(items.map(i => i.category))];
+        bar.innerHTML = cats.map(c => `<div class="cat-item ${c === currentCat ? 'active' : ''}" onclick="filterCat('${c.replace(/'/g, "\\'")}')">${c}</div>`).join('');
+    }
+    
+    function filterCat(cat) { currentCat = cat; renderCats(); render(); }
+    
+    function render(q = '') {
+        const area = document.getElementById('menu');
+        if (!menuItems?.length) return;
+        const term = q.toLowerCase();
+        const filtered = menuItems.filter(i => {
+            const matchMeal = currentMeal === 'الكل' || i.meal === currentMeal || i.meal === 'الكل';
+            const matchCat = currentCat === 'الكل' || i.category === currentCat;
+            const matchSearch = i.name.toLowerCase().includes(term) || i.id.toString().includes(term);
+            return matchMeal && matchCat && matchSearch;
+        });
+        area.innerHTML = filtered.map(i => `
+            <div class="item">
+                <div style="display:flex; align-items:center; flex:1;">
+                    <span class="item-id">${i.id}</span>
+                    <span class="item-name">${i.name}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="item-price">${i.price}</span>
+                    <button class="add-btn" onclick="add(${i.id}, 1)">+</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function add(id, change) {
+        cart[id] = (cart[id] || 0) + change;
+        if (cart[id] <= 0) delete cart[id];
+        updateUI();
+        showToast();
+    }
+    
+    function updateUI() {
+        const count = Object.values(cart).reduce((a, b) => a + b, 0);
+        document.getElementById('b').innerText = count;
+        let total = 0;
+        for (let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if (item) total += item.price * cart[id];
+        }
+        document.getElementById('float-t').innerText = total + " ر.ي";
+        if (document.getElementById('modal').style.display === 'flex') renderCart();
+        calculateSplit();
+    }
+    
+    function openC() { document.getElementById('modal').style.display = 'flex'; renderCart(); }
+    function closeC() { document.getElementById('modal').style.display = 'none'; }
+    
+    function renderCart() {
+        const list = document.getElementById('list');
+        let total = 0, html = '';
+        for (let id in cart) {
+            const item = menuItems.find(x => x.id == id);
+            if (item) {
+                total += item.price * cart[id];
+                html += `
+                    <div class="cart-row">
+                        <span><span style="color:var(--gold);">${item.id}</span> ${item.name}</span>
+                        <div style="display:flex; gap:6px;">
+                            <button class="qty-btn" onclick="add(${id},-1)">-</button>
+                            <span style="min-width:30px; text-align:center;">${cart[id]}</span>
+                            <button class="qty-btn" onclick="add(${id},1)">+</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        list.innerHTML = html || '<p style="text-align:center;padding:20px;">🛒 السلة فارغة</p>';
+        document.getElementById('total').innerText = total + " ر.ي";
+        calculateSplit();
+    }
+    
+    function setM(meal, btn) {
+        currentMeal = meal;
+        currentCat = 'الكل';
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderCats();
+        render();
+    }
+    
+    document.getElementById('search').addEventListener('input', (e) => render(e.target.value));
+    
+    // ملاحظة: المصفوفة menuItems تُستورد من ملف menu-data.js
 </script>
+
+<script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+</script>
+
+<div style="text-align:center; padding:20px; border-top:1px solid rgba(197,160,89,0.2); background:#0a0a0a;">
+    <p>تصميم وتنفيذ: <span style="color:var(--gold);">محمد الصالحي</span> | بصمات برو</p>
+</div>
 
 </body>
 </html>
