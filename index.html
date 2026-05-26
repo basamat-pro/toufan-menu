@@ -36,11 +36,6 @@
             font-family: 'Tajawal', sans-serif;
             color: #ffffff;
             padding-top: 115px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        body.ready {
-            opacity: 1;
         }
         
         ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -361,6 +356,7 @@
         .dialog-btn.cancel { background: var(--gray); color: #fff; }
         .dialog-btn:active { transform: scale(0.96); }
         
+        /* شاشة الترحيب */
         #splash {
             position: fixed;
             top: 0;
@@ -470,6 +466,7 @@
 </head>
 <body>
 
+<!-- شاشة الترحيب -->
 <div id="splash">
     <img src="https://i.postimg.cc/fS7ksRQm/shʿar-twfan-llbarkwd.png" alt="شعار مطاعم طوفان الأقصى" class="splash-logo">
     <div class="splash-text">
@@ -480,67 +477,70 @@
     </div>
 </div>
 
-<div class="fixed-header">
-    <marquee behavior="scroll" direction="right" scrollamount="5" style="background: #1a1a1a; padding: 8px 0; margin-bottom: 10px; border-radius: 30px; border: 2px solid #c5a059; color: #ffcc66; font-size: 14px; font-weight: bold;">
-        🍽️ مرحباً بكم في مطاعم وبروست طوفان الأقصى — أهلاً وسهلاً بكم 🤍 — نتمنى لكم تجربة ممتعة 🍽️
-    </marquee>
-    
-    <div class="search-container">
-        <input type="text" class="inp" id="search" placeholder="🔍 ابحث بالاسم أو الرقم...">
-        <button class="voice-search-btn" onclick="startVoiceSearch()">🎤</button>
-    </div>
-    <div class="tabs">
-        <button class="tab active" onclick="setM('الكل', this)">الكل</button>
-        <button class="tab" onclick="setM('صبوح وعشاء', this)">صبوح/عشاء</button>
-        <button class="tab" onclick="setM('غداء', this)">غداء</button>
-    </div>
-    <div class="cat-bar" id="catBar"></div>
-</div>
-
-<div class="scroll-content">
-    <div id="menu"></div>
-</div>
-
-<div class="cart-wrapper" onclick="openC()">
-    <div id="cart-btn">🛒<div class="badge" id="b">0</div></div>
-    <div class="floating-total" id="float-t">0 ر.ي</div>
-</div>
-
-<div id="modal">
-    <div class="modal-body">
-        <h3 style="text-align:center; color:var(--gold); margin-top:0;">🛒 سلة طلباتك</h3>
-        <div id="list"></div>
-        <h2 id="total" style="text-align:center; color:var(--gold); margin:15px 0;">0 ر.ي</h2>
+<!-- باقي الموقع (يظهر بعد انتهاء الفقاعة) -->
+<div id="mainApp" style="display: none;">
+    <div class="fixed-header">
+        <marquee behavior="scroll" direction="right" scrollamount="5" style="background: #1a1a1a; padding: 8px 0; margin-bottom: 10px; border-radius: 30px; border: 2px solid #c5a059; color: #ffcc66; font-size: 14px; font-weight: bold;">
+            🍽️ مرحباً بكم في مطاعم وبروست طوفان الأقصى — أهلاً وسهلاً بكم 🤍 — نتمنى لكم تجربة ممتعة 🍽️
+        </marquee>
         
-        <div class="order-buttons">
-            <button onclick="showInternalDialog()" class="internal-btn">🏠 طلب داخلي</button>
-            <button onclick="showExternalDialog()" class="external-btn">📍 طلب خارجي</button>
+        <div class="search-container">
+            <input type="text" class="inp" id="search" placeholder="🔍 ابحث بالاسم أو الرقم...">
+            <button class="voice-search-btn" onclick="startVoiceSearch()">🎤</button>
         </div>
-        
-        <div class="split-box" id="splitBox">
-            <label style="color: #aaa; font-size: 12px;">👥 تقسيم الفاتورة</label>
-            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 8px;">
-                <span>عدد الأشخاص:</span>
-                <input type="number" id="num-people" value="1" min="1" oninput="calculateSplit()">
+        <div class="tabs">
+            <button class="tab active" onclick="setM('الكل', this)">الكل</button>
+            <button class="tab" onclick="setM('صبوح وعشاء', this)">صبوح/عشاء</button>
+            <button class="tab" onclick="setM('غداء', this)">غداء</button>
+        </div>
+        <div class="cat-bar" id="catBar"></div>
+    </div>
+
+    <div class="scroll-content">
+        <div id="menu"></div>
+    </div>
+
+    <div class="cart-wrapper" onclick="openC()">
+        <div id="cart-btn">🛒<div class="badge" id="b">0</div></div>
+        <div class="floating-total" id="float-t">0 ر.ي</div>
+    </div>
+
+    <div id="modal">
+        <div class="modal-body">
+            <h3 style="text-align:center; color:var(--gold); margin-top:0;">🛒 سلة طلباتك</h3>
+            <div id="list"></div>
+            <h2 id="total" style="text-align:center; color:var(--gold); margin:15px 0;">0 ر.ي</h2>
+            
+            <div class="order-buttons">
+                <button onclick="showInternalDialog()" class="internal-btn">🏠 طلب داخلي</button>
+                <button onclick="showExternalDialog()" class="external-btn">📍 طلب خارجي</button>
             </div>
-            <div id="split-result" style="margin-top: 10px; color: #ff3333; font-weight: bold; display: none;">
-                نصيب كل شخص: <span id="per-person-price" style="color: var(--gold);">0</span> ر.ي
+            
+            <div class="split-box" id="splitBox">
+                <label style="color: #aaa; font-size: 12px;">👥 تقسيم الفاتورة</label>
+                <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 8px;">
+                    <span>عدد الأشخاص:</span>
+                    <input type="number" id="num-people" value="1" min="1" oninput="calculateSplit()">
+                </div>
+                <div id="split-result" style="margin-top: 10px; color: #ff3333; font-weight: bold; display: none;">
+                    نصيب كل شخص: <span id="per-person-price" style="color: var(--gold);">0</span> ر.ي
+                </div>
             </div>
+            
+            <div style="display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; justify-content: center;">
+                <button onclick="copyCartToClipboard()" class="copy-btn">📋 نسخ الفاتورة</button>
+                <button onclick="saveFavoriteMeal()" class="action-btn fav-btn" style="flex:1;">❤️ حفظ كوجبة مفضلة</button>
+                <button onclick="loadFavoriteMeal()" class="action-btn load-fav-btn" style="flex:1;">⭐ استدعاء المفضلة</button>
+            </div>
+            
+            <button onclick="toggleSplitBox()" class="action-btn" style="background: #2a2a2a; color: var(--gold);">💰 تقسيم الفاتورة</button>
+            <button onclick="forceClearCart()" class="action-btn clear-btn">🗑️ إفراغ السلة</button>
+            <button onclick="closeC()" class="action-btn close-btn">❌ إغلاق</button>
         </div>
-        
-        <div style="display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; justify-content: center;">
-            <button onclick="copyCartToClipboard()" class="copy-btn">📋 نسخ الفاتورة</button>
-            <button onclick="saveFavoriteMeal()" class="action-btn fav-btn" style="flex:1;">❤️ حفظ كوجبة مفضلة</button>
-            <button onclick="loadFavoriteMeal()" class="action-btn load-fav-btn" style="flex:1;">⭐ استدعاء المفضلة</button>
-        </div>
-        
-        <button onclick="toggleSplitBox()" class="action-btn" style="background: #2a2a2a; color: var(--gold);">💰 تقسيم الفاتورة</button>
-        <button onclick="forceClearCart()" class="action-btn clear-btn">🗑️ إفراغ السلة</button>
-        <button onclick="closeC()" class="action-btn close-btn">❌ إغلاق</button>
     </div>
-</div>
 
-<div id="toastMsg" class="toast-msg">✅ تم إضافة الصنف للسلة</div>
+    <div id="toastMsg" class="toast-msg">✅ تم إضافة الصنف للسلة</div>
+</div>
 
 <script>
     // =============================================
@@ -746,9 +746,6 @@
         } else { resultDiv.style.display = 'none'; }
     }
     
-    // =============================================
-    // إفراغ السلة بنافذة أنيقة
-    // =============================================
     function forceClearCart() {
         if (Object.keys(cart).length === 0) {
             showToast('⚠️ السلة فارغة');
@@ -813,14 +810,14 @@
                 setTimeout(() => {
                     bubble.remove();
                     // 3. بعد انتهاء الفقاعة، نبدأ تشغيل المنيو
+                    document.getElementById('mainApp').style.display = 'block';
                     init();
-                    document.body.classList.add('ready');
                 }, 1200);
             }, 3500);
         } else {
             // إذا لم يكن وقت العيد، نبدأ المنيو مباشرة
+            document.getElementById('mainApp').style.display = 'block';
             init();
-            document.body.classList.add('ready');
         }
     }, 2500);
     
